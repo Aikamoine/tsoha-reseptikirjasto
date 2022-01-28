@@ -1,0 +1,13 @@
+{{ name }}
+<p></p>
+<hr>
+{% for ingredient in ingredients %}
+<li>{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</li>
+{% endfor %}
+<p></p>
+
+{% for step in steps %}
+<li>{{ step.order }}: {{ step.step }}</li>
+{% endfor %}
+<hr>
+<a href="/">Takaisin</a>

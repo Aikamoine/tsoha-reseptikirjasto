@@ -1,0 +1,22 @@
+<h2>Reseptin lisäys</h2>
+
+<form action="/addrecipe" method="post">
+
+    <p>Reseptin nimi<br>
+        <input type="text" name="name" minlength="1" maxlength="50">
+    </p>
+
+    <p>Ainekset, yksi per rivi muodossa (kpl yksikkö ainesosa), todellinen välilyönti on _, esimerkiksi kuivattu_tomaatti:<br>
+        <textarea name="ingredients" rows="8" cols="50" maxlength="10000"></textarea>
+    </p>
+
+    <p>Työvaiheet, yksi per rivi<br>
+        <textarea name="steps" rows="8" cols="100" maxlength="10000"></textarea>
+    </p>
+
+    <input type="submit" value="Lähetä">
+
+</form>
+
+<p>
+    <a href="/">Palaa takaisin</a>

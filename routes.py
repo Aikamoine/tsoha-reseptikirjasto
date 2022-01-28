@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, request, redirect, session
 import user_commands
+import recipe_commands
 
 @app.route("/")
 def index():
@@ -40,6 +41,32 @@ def adduser():
             return redirect("/")
         else:
             return render_template("error.html", message="Rekisteröinti ei onnistunut")
+
+
+@app.route("/addrecipe", methods=["GET", "POST"])
+def addrecipe():
+    if request.method == "GET":
+        return render_template("addrecipe.html")
+    if request.method == "POST":
+        name = request.form["name"]
+        ingredients = request.form["ingredients"]
+        steps = request.form["steps"]
+        if recipe_commands.add_recipe(name, ingredients, steps):
+            return redirect("/")
+        else:
+            return render_template("error.html", message="Reseptin lisäys ei onnistunut")
+
+@app.route("/viewrecipes")
+def viewrecipes():
+    recipe_list = recipe_commands.list_recipes()
+    return render_template("viewrecipes.html", recipes=recipe_list)
+
+
+@app.route("/recipe/<int:id>")
+def recipe(id):
+    ingredient_list = recipe_commands.list_ingredients(id)
+    step_list = recipe_commands.list_steps(id)
+    return render_template("recipe.html", ingredients=ingredient_list, steps=step_list)
 
 @app.route("/logout")
 def logout():

@@ -1,8 +1,8 @@
 import os
 from flask import abort, request, session
+from sqlalchemy import null
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
-
 
 def login(username, password):
     sql = "SELECT password, id, role FROM users WHERE username=:username"
@@ -21,7 +21,7 @@ def login(username, password):
 
 def logout():
     del session["user_id"]
-    del session["user_name"]
+    del session["username"]
     del session["user_role"]
 
 
@@ -36,7 +36,6 @@ def add_user(username, password, role):
     except:
         return False
     return login(username, password)
-
 
 def user_id():
     return session.get("user_id", 0)
