@@ -43,6 +43,7 @@ def addrecipe():
     if request.method == "GET":
         return render_template("addrecipe.html")
     if request.method == "POST":
+        user_commands.check_csrf()
         name = request.form["name"]
         ingredients = request.form["ingredients"]
         steps = request.form["steps"]
@@ -77,6 +78,7 @@ def shoppinglist():
         current_list = shopping_list.get_shopping_list()
         return render_template("shoppinglist.html", current_list=current_list)
     if request.method == "POST":
+        user_commands.check_csrf()
         shopping_list.remove_from_list(request.form.getlist("current_items"))
         return redirect("/shoppinglist")
 
