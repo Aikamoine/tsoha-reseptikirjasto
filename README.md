@@ -1,6 +1,8 @@
 # Reseptikirjasto
 Tällä hetkellä sovelluksen perusominaisuudet toimivat MVP-tasolla. Mukavaan käyttökokemukseen on vielä paljon kehitettävää, mutta kokonaisuus on periaatteessa nyt toimiva.
 
+Huom! Rivien poistaminen ostoslistalta vaikuttaa toimivan varsin vaihtelevasti ja saattaa vaatia useampia yrityksiä/selainsivun päivityksiä. Chrome-selaimella vaikuttaisi toimivan vähän paremmin kuin esim. Firefoxilla.
+
 ## Ominaisuuksia
 - käyttäjä voi kirjautua sisään ja ulos (toteutettu)
   - Käyttäjätunnuksen luominen onnistuu joko käyttäjän (toteutettu) tai pääkäyttäjän toimesta
@@ -21,6 +23,7 @@ Tällä hetkellä sovelluksen perusominaisuudet toimivat MVP-tasolla. Mukavaan k
   - syötteiden validoinnin tehostus
   - käyttöoikeuksien rajaus
   - ainesosien tarkistus / kirjoitusvirheiden eliminointi
+  - ainesosien lisäys murto- tai liukulukuina
 - käyttöoikeushallinta
   - tällä hetkellä ei varsinaisesti tee mitään
   - käyttäjien / reseptien poisto pääkäyttäjäoikeuksien taakse
@@ -31,4 +34,5 @@ Tällä hetkellä sovelluksen perusominaisuudet toimivat MVP-tasolla. Mukavaan k
 
 ### Laajempia ideoita / täsmennyksiä
 - Finelin sivuilta voisi tuoda ruoka-aineiden ravintoarvot ja sovellus voisi sitten laskea annosten ravintosisällön
+- tilavuusyksiköiden tunnistaminen (esim. 1 rkl = 15 ml) ja yhteenlasku litroissa
 
