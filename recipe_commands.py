@@ -7,6 +7,7 @@ def add_recipe(name, ingredients, steps):
     
     #TODO: make list_steps and list_ingredients -functions
     #TODO: remove empty strings/rows
+    #TODO: handle ingredient inputs not consisting of 3 words
     ingredient_list = ingredients.split("\n")
     for i in range(len(ingredient_list)):
         #[amount, unit, name], replace unit and name with respective id's
@@ -19,9 +20,6 @@ def add_recipe(name, ingredients, steps):
     step_list = steps.split("\n")
     for step in step_list:
         step = step.replace("\r","")
-
-    print(ingredient_list)
-    print(step_list)
 
     try:
         sql = """INSERT INTO recipes (name, visible) VALUES (:name, 1) RETURNING id"""
@@ -36,7 +34,6 @@ def add_recipe(name, ingredients, steps):
                                "unit_id": ingredient[1],
                                "amount": ingredient[0]
                                }).fetchone()[0]
-            print(f"added ingredient {ing_id}")
         
         for i in range(len(step_list)):
             sql = """INSERT INTO recipe_steps (recipe_id, step, number) VALUES (:recipe_id, :step, :number) RETURNING id"""
@@ -45,7 +42,6 @@ def add_recipe(name, ingredients, steps):
                 "step": step_list[i],
                 "number": i,
             }).fetchone()[0]
-            print(f"added step {step_id}")
 
         db.session.commit()
     except:
@@ -85,24 +81,25 @@ def get_unit_id(name):
     db.session.commit()
     return unit_id
 
+
+def get_recipe_name(id):
+    sql = "SELECT name FROM recipes WHERE id=:id"
+    return db.session.execute(sql, {"id": id}).fetchone()[0]
+
 def list_recipes():
     sql = "SELECT id, name, servings, time FROM recipes WHERE visible = 1 ORDER BY name DESC"
     result = db.session.execute(sql).fetchall()
-    print(result)
     return result
-
 
 def list_ingredients(id):
     sql = "SELECT RI.amount as amount, U.name as unit, I.name as name FROM " \
         "recipe_ingredients RI, units U, ingredients I WHERE RI.recipe_id=:id AND U.id=RI.unit_id AND I.id=RI.ingredient_id"
     result = db.session.execute(sql, {"id": id}).fetchall()
-    print(result)
     return result
 
 def list_steps(id):
     sql = "SELECT step, number+1 as order FROM recipe_steps WHERE recipe_id=:id ORDER BY number ASC"
     result = db.session.execute(sql, {"id": id}).fetchall()
-    print(result)
     return result
 
 def check_length(tocheck):

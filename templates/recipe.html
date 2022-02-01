@@ -1,4 +1,4 @@
-{{ name }}
+<h2>{{ name }}</h2>
 <p></p>
 <hr>
 {% for ingredient in ingredients %}
@@ -10,4 +10,5 @@
 <li>{{ step.order }}: {{ step.step }}</li>
 {% endfor %}
 <hr>
+<p><a href="/addtolist/{{ id }}"{{ id }}>Lisää ostoslistalle</a></p>
 <a href="/">Takaisin</a>

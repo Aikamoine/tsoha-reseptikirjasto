@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, request, redirect, session
 import user_commands
 import recipe_commands
+import shopping_list
 
 @app.route("/")
 def index():
@@ -20,12 +21,6 @@ def login():
         if not user_commands.login(username, password):
             return render_template("error.html", message="Väärä tunnuksen ja salasanan kombo")
         return redirect("/")
-
-    #username = request.form["username"]
-    #password = request.form["password"]
-    # TODO: check username and password
-    #session["username"] = username
-    #return redirect("/")
 
 @app.route("/adduser", methods=["GET", "POST"])
 def adduser():
@@ -64,9 +59,26 @@ def viewrecipes():
 
 @app.route("/recipe/<int:id>")
 def recipe(id):
+    name = recipe_commands.get_recipe_name(id)
     ingredient_list = recipe_commands.list_ingredients(id)
     step_list = recipe_commands.list_steps(id)
-    return render_template("recipe.html", ingredients=ingredient_list, steps=step_list)
+    return render_template("recipe.html", id=id, name=name, ingredients=ingredient_list, steps=step_list)
+
+@app.route("/addtolist/<int:id>")
+def addtolist(id):
+    if shopping_list.add_to_list(id):
+        return redirect("/viewrecipes")
+    return render_template("error.html", message="Ostoslistalle lisäys ei onnistunut")
+
+
+@app.route("/shoppinglist", methods=["GET", "POST"])
+def shoppinglist():
+    if request.method == "GET":
+        current_list = shopping_list.get_shopping_list()
+        return render_template("shoppinglist.html", current_list=current_list)
+    if request.method == "POST":
+        shopping_list.remove_from_list(request.form.getlist("current_items"))
+        return redirect("/shoppinglist")
 
 @app.route("/logout")
 def logout():

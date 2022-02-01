@@ -1,0 +1,11 @@
+<h2>Ostoslista</h2>
+<p></p>
+<form action="/shoppinglist" method="POST">
+{% for item in current_list %}
+<input type="checkbox" name="current_items" value="{{ item }}"> {{ item }} <p></p>
+{% endfor %}
+<p>
+<input type="submit" value="Poista valinnat listalta">
+</form>
+<p>
+<a href="/">Palaa takaisin</a>
