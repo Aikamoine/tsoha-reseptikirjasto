@@ -1,5 +1,5 @@
 # Reseptikirjasto
-Tällä hetkellä sovelluksen perusominaisuudet toimivat MVP-tasolla. Mukavaan käyttökokemukseen on vielä paljon kehitettävää, mutta kokonaisuus on periaatteessa nyt toimiva.
+Tällä hetkellä sovelluksen perusominaisuudet toimivat MVP-tasolla. Mukavaan käyttökokemukseen on vielä paljon kehitettävää, mutta kokonaisuus on periaatteessa nyt toimiva. Sovellus löytyy https://tsoha-reseptikirjasto.herokuapp.com.
 
 Huom! Rivien poistaminen ostoslistalta vaikuttaa toimivan varsin vaihtelevasti ja saattaa vaatia useampia yrityksiä/selainsivun päivityksiä. Chrome-selaimella vaikuttaisi toimivan vähän paremmin kuin esim. Firefoxilla.
 
