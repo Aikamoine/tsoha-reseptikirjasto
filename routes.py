@@ -80,7 +80,10 @@ def shoppinglist():
     if request.method == "POST":
         user_commands.check_csrf()
         shopping_list.remove_from_list(request.form.getlist("current_items"))
-        return redirect("/shoppinglist")
+
+        #redirect to main page because the database operation of updating the shopping
+        #list is too slow compared to loading the page again
+        return redirect("/")
 
 @app.route("/logout")
 def logout():

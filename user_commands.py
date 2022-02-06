@@ -3,6 +3,7 @@ from flask import abort, request, session
 from sqlalchemy import null
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
+from shopping_list import reset_shopping_list
 
 def login(username, password):
     sql = "SELECT password, id, role FROM users WHERE username=:username"
@@ -20,12 +21,12 @@ def login(username, password):
 
 
 def logout():
+    reset_shopping_list()
     del session["user_id"]
     del session["username"]
     del session["user_role"]
     del session["csrf_token"]
-
-
+    
 def add_user(username, password, role):
     hash_value = generate_password_hash(password)
     try:

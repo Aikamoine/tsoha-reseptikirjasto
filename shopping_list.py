@@ -1,26 +1,61 @@
 from recipe_commands import list_ingredients
+from db import db
+from flask import abort, request, session
 
-#TODO: make this a session dependent variable
 current_list = {}
 
 def add_to_list(id):
     to_add = list_ingredients(id)
+    print(to_add)
     for ingredient in to_add:
-        list_item = f"{ingredient[1]} {ingredient[2]}"
-        amount = current_list.get(list_item, 0)
-        current_list[list_item] = amount + ingredient[0]
+        title = f"{ingredient[1]} {ingredient[2]}"
+        try:
+            sql = "SELECT amount FROM shoppinglists WHERE user_id=:user_id AND title=:title"
+            result = db.session.execute(sql, {
+                "user_id": session["user_id"],
+                "title": title}).fetchone()
+            if result == None:
+                sql = """INSERT INTO shoppinglists (user_id, title, amount) VALUES (:user_id, :title, :amount)"""
+                db.session.execute(sql, {
+                    "user_id": session["user_id"],
+                    "title": title,
+                    "amount": ingredient[0]})
+
+            else:
+                sql = "UPDATE shoppinglists SET amount=:amount WHERE user_id=:user_id AND title=:title"
+                db.session.execute(sql, {
+                    "amount": result[0] + ingredient[0],
+                    "user_id": session["user_id"],
+                    "title": title})
+        except:
+            return False
+    db.session.commit()
     return True
 
 def get_shopping_list():
-    return_list = []
-    for item in current_list:
-        return_list.append(f"{current_list[item]} {item}")
-    return return_list
+    sql = "SELECT amount, title FROM shoppinglists WHERE user_id=:user_id"
+    result = db.session.execute(sql, {
+        "user_id": session["user_id"]}).fetchall()
+    return result
 
 def remove_from_list(to_remove):
-    for item in to_remove:
-        key = item[item.find(" ") + 1:]
-        current_list.pop(key)
+    try:
+        for title in to_remove:
+            sql = "DELETE FROM shoppinglists where user_id=:user_id AND title=:title"
+            db.session.execute(
+                sql, {"user_id": session["user_id"], "title": title})
+    except:
+        return False
+    db.session.commit()
+    return True
 
 def reset_shopping_list():
-    current_list = {}
+    try:
+        sql = "DELETE FROM shoppinglists where user_id=:user_id"
+        db.session.execute(
+            sql, {"user_id": session["user_id"]})
+    except:
+        return False
+
+    db.session.commit()
+    return True

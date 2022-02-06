@@ -52,3 +52,10 @@ CREATE TABLE tags (
     id SERIAL PRIMARY KEY,
     tag TEXT
 );
+
+CREATE TABLE shoppinglists (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    title TEXT,
+    amount NUMERIC(7,2)
+);
