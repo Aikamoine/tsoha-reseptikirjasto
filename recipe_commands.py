@@ -12,7 +12,7 @@ def add_recipe(name, ingredients, steps):
     for i in range(len(ingredient_list)):
         #[amount, unit, name], replace unit and name with respective id's
         parts = ingredient_list[i].replace("\r", "").split(" ")
-        parts[0] = int(parts[0])
+        parts[0] = float(parts[0].replace(",", "."))
         parts[1] = get_unit_id(parts[1])
         parts[2] = get_ingredient_id(parts[2])
         ingredient_list[i] = parts

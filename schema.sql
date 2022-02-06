@@ -30,7 +30,7 @@ CREATE TABLE recipe_ingredients (
     recipe_id INTEGER REFERENCES recipes,
     ingredient_id INTEGER REFERENCES ingredients,
     unit_id INTEGER REFERENCES units,
-    amount INTEGER
+    amount NUMERIC(7,2)
 );
 
 CREATE TABLE recipe_steps (
