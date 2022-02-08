@@ -9,6 +9,14 @@
         <div class="row">
             <div class="col-8">
                 <p>Olet kirjautunut nimellä {{ session.username }}</p>
+                <br>
+                {% if session.user_role == "admin" %}
+                <p>Olet pääkäyttäjä, nice!</p>
+                <a href="/adminview/1">Hallitse käyttäjiä</a><br>
+                <a href="/adminview/2">Hallitse ainesosia</a><br>
+                <a href="/adminview/3">Hallitse yksiköitä</a><br>
+                <a href="/adminview/4">Hallitse reseptejä</a><br>
+                {% endif %}
             </div>
         </div>
     {% else %}

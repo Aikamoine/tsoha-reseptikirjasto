@@ -1,5 +1,6 @@
 import os
 from flask import abort, request, session
+from itsdangerous import exc
 from sqlalchemy import null
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
@@ -8,7 +9,7 @@ from shopping_list import reset_shopping_list
 ROLES = {"none": 0, "user": 1, "editor": 2, "admin": 3}
 
 def login(username, password):
-    sql = "SELECT password, id, role FROM users WHERE username=:username"
+    sql = "SELECT password, id, role FROM users WHERE username=:username AND visible = 1"
     result = db.session.execute(sql, {"username": username})
     user = result.fetchone()
     if not user:
@@ -44,6 +45,14 @@ def add_user(username, password, role):
 def user_id():
     return session.get("user_id", 0)
 
+def list_users():
+    try:
+        sql = "SELECT id, username FROM users WHERE visible = 1"
+        result = db.session.execute(sql)
+    except:
+        return False
+    return result
+
 def check_role(role):
     user_role = session.get("user_role", "none")
     return ROLES[user_role] >= ROLES[role]
@@ -51,3 +60,14 @@ def check_role(role):
 def check_csrf():
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
+
+def delete_user(id):
+    if id == session["user_id"]:
+        return False
+    try:
+        sql = "UPDATE users SET visible=0 WHERE id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True

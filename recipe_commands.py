@@ -102,6 +102,22 @@ def list_steps(id):
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result
 
+def list_all_ingredients():
+    try:
+        sql = "SELECT id, name FROM ingredients WHERE visible = 1"
+        result = db.session.execute(sql)
+    except:
+        return False
+    return result
+
+def list_all_units():
+    try:
+        sql = "SELECT id, name FROM units WHERE visible = 1"
+        result = db.session.execute(sql)
+    except:
+        return False
+    return result
+
 def check_length(tocheck):
     """Checks a list against maximum lenghts
 
@@ -114,4 +130,31 @@ def check_length(tocheck):
     for element in tocheck:
         if len(element[0]) > element[1]:
             return False
+    return True
+
+def delete_ingredient(id):
+    try:
+        sql = "UPDATE ingredients SET visible=0 WHERE id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def delete_unit(id):
+    try:
+        sql = "UPDATE units SET visible=0 WHERE id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def delete_recipe(id):
+    try:
+        sql = "UPDATE recipes SET visible=0 WHERE id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
     return True
