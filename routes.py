@@ -69,21 +69,18 @@ def recipe(id):
 def addtolist(id):
     if shopping_list.add_to_list(id):
         return redirect("/viewrecipes")
-    return render_template("error.html", message="Ostoslistalle lisäys ei onnistunut")
+    return render_template("error.html", message="Ostoslistalle lisäys ei onnistunut. Tämä toimii vain kirjautuneilla käyttäjillä")
 
 
 @app.route("/shoppinglist", methods=["GET", "POST"])
 def shoppinglist():
+    user_commands.check_csrf()
     if request.method == "GET":
         current_list = shopping_list.get_shopping_list()
         return render_template("shoppinglist.html", current_list=current_list)
     if request.method == "POST":
-        user_commands.check_csrf()
         shopping_list.remove_from_list(request.form.getlist("current_items"))
-
-        #redirect to main page because the database operation of updating the shopping
-        #list is too slow compared to loading the page again
-        return redirect("/")
+        return redirect("/shoppinglist")
 
 @app.route("/logout")
 def logout():

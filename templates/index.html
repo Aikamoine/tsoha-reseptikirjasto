@@ -1,20 +1,33 @@
-{% if session.username %}
-<p>Olet kirjautunut nimellä {{ session.username }}</p>
-<a href="/addrecipe">Lisää resepti</a><br>
-<a href="/viewrecipes">Selaa reseptejä</a><br>
-<a href="/shoppinglist">Katso ostoslistaa</a><br>
-<a href="/logout">Kirjaudu ulos</a>
-{% else %}
-<form action="/login" method="POST">
-    <p>Tunnus:<br>
-        <input type="text" name="username">
-    </p>
-    <p>Salasana:<br>
-        <input type="password" name="password">
-    </p>
-    <input type="submit" value="Kirjaudu">
-</form>
-<p>
-    <a href="/adduser">Luo uusi käyttäjätunnus</a>
-</p>
-{% endif %}
+<!doctype html>
+{% extends "layout.html" %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+{% block title %}{% endblock %}
+{% block content %}
+
+    {% if session.username %}
+        <div class="row">
+            <div class="col-8">
+                <p>Olet kirjautunut nimellä {{ session.username }}</p>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-8">
+                <form action="/login" method="POST">
+                    <p>Tunnus:<br>
+                        <input type="text" name="username">
+                    </p>
+                    <p>Salasana:<br>
+                        <input type="password" name="password">
+                    </p>
+                    <input type="submit" value="Kirjaudu">
+                </form>
+                <p>
+                    <a href="/adduser">Luo uusi käyttäjätunnus</a>
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
