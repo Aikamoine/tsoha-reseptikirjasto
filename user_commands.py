@@ -5,6 +5,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
 from shopping_list import reset_shopping_list
 
+ROLES = {"none": 0, "user": 1, "editor": 2, "admin": 3}
+
 def login(username, password):
     sql = "SELECT password, id, role FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username": username})
@@ -42,12 +44,10 @@ def add_user(username, password, role):
 def user_id():
     return session.get("user_id", 0)
 
-
-def require_role(role):
-    if role > session.get("user_role", 0):
-        abort(403)
-
+def check_role(role):
+    user_role = session.get("user_role", "none")
+    return ROLES[user_role] >= ROLES[role]
 
 def check_csrf():
-    if session["csrf_token"] != session["csrf_token"]:
+    if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)

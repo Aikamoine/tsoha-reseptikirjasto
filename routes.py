@@ -20,7 +20,7 @@ def login():
 
         if not user_commands.login(username, password):
             return render_template("error.html", message="Väärä tunnuksen ja salasanan kombo")
-        return redirect("/")
+        return redirect("/viewrecipes")
 
 @app.route("/adduser", methods=["GET", "POST"])
 def adduser():
@@ -40,6 +40,10 @@ def adduser():
 
 @app.route("/addrecipe", methods=["GET", "POST"])
 def addrecipe():
+    #TODO: change required role to editor once course is over!
+    if not user_commands.check_role("user"):
+        return render_template("error.html", message="Tämä toimii vain kirjautuneilla käyttäjillä")
+
     if request.method == "GET":
         return render_template("addrecipe.html")
     if request.method == "POST":
@@ -74,11 +78,14 @@ def addtolist(id):
 
 @app.route("/shoppinglist", methods=["GET", "POST"])
 def shoppinglist():
-    user_commands.check_csrf()
+    if not user_commands.check_role("editor"):
+        return render_template("error.html", message="Tämä toimii vain kirjautuneilla käyttäjillä")
+
     if request.method == "GET":
         current_list = shopping_list.get_shopping_list()
         return render_template("shoppinglist.html", current_list=current_list)
     if request.method == "POST":
+        user_commands.check_csrf()
         shopping_list.remove_from_list(request.form.getlist("current_items"))
         return redirect("/shoppinglist")
 
