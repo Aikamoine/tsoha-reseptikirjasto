@@ -1,10 +1,10 @@
 <h2>{{ name }}</h2>
-<p></p>
+<br>
 <hr>
 {% for ingredient in ingredients %}
 <li>{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</li>
 {% endfor %}
-<p></p>
+<br>
 
 {% for step in steps %}
 <li>{{ step.order }}: {{ step.step }}</li>

@@ -6,7 +6,6 @@ current_list = {}
 
 def add_to_list(id):
     to_add = list_ingredients(id)
-    print(to_add)
     for ingredient in to_add:
         title = f"{ingredient[1]} {ingredient[2]}"
         try:
