@@ -7,14 +7,19 @@
 
 <h2>Ostoslista</h2>
 <br>
+{% if current_list %}
 <form action="/shoppinglist" method="POST">
 {% for item in current_list %}
 <input type="checkbox" name="current_items" value="{{ item.title }}"> {{ item.amount }} {{ item.title }}<br>
 {% endfor %}
-<p>
+<br>
 <input type="submit" value="Poista valinnat listalta">
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
-<p>
+<br>
+{% else %}
+<p>Ostoslistalla ei ole tällä hetkellä mitään</p>
+{% endif %}
 <a href="/">Palaa takaisin</a>
+
 {% endblock %}
