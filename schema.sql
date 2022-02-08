@@ -46,7 +46,8 @@ CREATE TABLE comments (
     user_id INTEGER REFERENCES users,
     recipe_id INTEGER REFERENCES recipes,
     stars INTEGER,
-    comment TEXT
+    comment TEXT,
+    visible INTEGER
 );
 
 CREATE TABLE tags (

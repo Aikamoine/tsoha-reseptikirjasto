@@ -22,12 +22,12 @@ def add_recipe(name, ingredients, steps):
         step = step.replace("\r","")
 
     try:
-        sql = """INSERT INTO recipes (name, visible) VALUES (:name, 1) RETURNING id"""
+        sql = "INSERT INTO recipes (name, visible) VALUES (:name, 1) RETURNING id"
         recipe_id = db.session.execute(
             sql, {"name": name}).fetchone()[0]
 
         for ingredient in ingredient_list:
-            sql = """INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, amount) VALUES (:recipe_id, :ingredient_id, :unit_id, :amount) RETURNING id"""
+            sql = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, amount) VALUES (:recipe_id, :ingredient_id, :unit_id, :amount) RETURNING id"
             ing_id = db.session.execute(sql, {
                                "recipe_id": recipe_id,
                                "ingredient_id": ingredient[2],
@@ -36,7 +36,7 @@ def add_recipe(name, ingredients, steps):
                                }).fetchone()[0]
         
         for i in range(len(step_list)):
-            sql = """INSERT INTO recipe_steps (recipe_id, step, number) VALUES (:recipe_id, :step, :number) RETURNING id"""
+            sql = "INSERT INTO recipe_steps (recipe_id, step, number) VALUES (:recipe_id, :step, :number) RETURNING id"
             step_id = db.session.execute(sql, {
                 "recipe_id": recipe_id,
                 "step": step_list[i],
@@ -57,7 +57,7 @@ def get_ingredient_id(name):
         if result:
             return result[0]
         else:
-            sql = """INSERT INTO ingredients (name, visible) VALUES (:name, 1) RETURNING id"""
+            sql = "INSERT INTO ingredients (name, visible) VALUES (:name, 1) RETURNING id"
             ingredient_id = db.session.execute(sql, {"name": name}).fetchone()[0]
     except:
         return False
@@ -73,7 +73,7 @@ def get_unit_id(name):
         if result:
             return result[0]
         else:
-            sql = """INSERT INTO units (name, visible) VALUES (:name, 1) RETURNING id"""
+            sql = "INSERT INTO units (name, visible) VALUES (:name, 1) RETURNING id"
             unit_id = db.session.execute(
                 sql, {"name": name}).fetchone()[0]
     except:
@@ -117,6 +117,28 @@ def list_all_units():
     except:
         return False
     return result
+
+def get_comments(id):
+    sql = "SELECT U.username as name, C.stars as stars, C.comment as text FROM " \
+        "comments C, users U WHERE C.user_id=U.id AND C.recipe_id=:id"
+    result = db.session.execute(sql, {"id": id}).fetchall()
+    return result
+
+def add_comment(recipe_id, user_id, stars, comment_text):
+    try:
+        sql = "INSERT INTO comments (user_id, recipe_id, stars, comment, visible) VALUES " \
+            "(:user_id, :recipe_id, :stars, :comment, 1)"
+        print(
+            f"INSERT INTO comments (user_id, recipe_id, stars, comment, visible) VALUES ({user_id}, {recipe_id}, {stars}, {comment_text}, 1)")
+        db.session.execute(sql, {
+            "user_id": user_id,
+            "recipe_id": recipe_id,
+            "stars": stars,
+            "comment": comment_text})
+        db.session.commit()
+    except:
+        return False
+    return True
 
 def check_length(tocheck):
     """Checks a list against maximum lenghts

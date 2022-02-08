@@ -16,8 +16,40 @@
 {% for step in steps %}
 <li>{{ step.order }}: {{ step.step }}</li>
 {% endfor %}
-<hr>
+<br>
 <p><a href="/addtolist/{{ id }}"{{ id }}>Lisää ostoslistalle</a></p>
-<a href="/viewrecipes">Takaisin</a>
+<hr>
 
+{% if comments %}
+    <h3>Kommentit</h3>
+    {% for comment in comments %}
+    <li>{{ comment.name }}: ({{ comment.stars }} tähteä) {{  comment.text  }}</li>
+    {% endfor %}
+{% else %}
+    <p>Ei vielä kommentteja</p>
+{% endif %}
+<br>    
+
+{% if session.user_id %}
+    <h3>Jätä kommentti</h3>
+    <form action="/comment" method="post">
+        Tähdet:
+        <select name="stars">
+        <option value="5">5
+        <option value="4">4
+        <option value="3">3
+        <option value="2">2
+        <option value="1">1
+        </select>
+        <p>
+            Kommentti:<br>
+            <textarea name="comment_text" rows="3" cols="40" maxlength="1000"></textarea>
+        <p>
+        <input type="submit" value="Lähetä">
+        <input type="hidden" name="recipe_id" value="{{ id }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+{% endif %}
+
+<a href="/viewrecipes">Takaisin</a>
 {% endblock %}

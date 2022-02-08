@@ -1,8 +1,15 @@
+from crypt import methods
+from curses import ERR
 from app import app
 from flask import render_template, request, redirect, session
 import user_commands
 import recipe_commands
 import shopping_list
+
+ERRORS = {"not_logged_in": "Tämä toimii vain kirjautuneilla käyttäjillä",
+          "admin_access" : "Tämä on sallittu vain pääkäyttäjälle",
+          "adding_failed" : " lisäys ei onnistunut",
+          "deleting_failed": " poisto ei onnistunut"}
 
 @app.route("/")
 def index():
@@ -39,13 +46,13 @@ def adduser():
         if user_commands.add_user(username, password1, "user"):
             return redirect("/")
         else:
-            return render_template("error.html", message="Rekisteröinti ei onnistunut")
+            return render_template("error.html", message="Käyttäjän"+ERRORS["adding_failed"])
 
 @app.route("/addrecipe", methods=["GET", "POST"])
 def addrecipe():
     #TODO: change required role to editor once course is over!
     if not user_commands.check_role("user"):
-        return render_template("error.html", message="Tämä toimii vain kirjautuneilla käyttäjillä")
+        return render_template("error.html", message=ERRORS["not_logged_in"])
 
     if request.method == "GET":
         return render_template("addrecipe.html")
@@ -57,7 +64,7 @@ def addrecipe():
         if recipe_commands.add_recipe(name, ingredients, steps):
             return redirect("/")
         else:
-            return render_template("error.html", message="Reseptin lisäys ei onnistunut")
+            return render_template("error.html", message="Reseptin"+ERRORS["adding_failed"])
 
 @app.route("/viewrecipes")
 def viewrecipes():
@@ -69,18 +76,38 @@ def recipe(id):
     name = recipe_commands.get_recipe_name(id)
     ingredient_list = recipe_commands.list_ingredients(id)
     step_list = recipe_commands.list_steps(id)
-    return render_template("recipe.html", id=id, name=name, ingredients=ingredient_list, steps=step_list)
+    comments = recipe_commands.get_comments(id)
+    return render_template("recipe.html", id=id, name=name, ingredients=ingredient_list, steps=step_list, comments=comments)
+
+@app.route("/comment", methods=["POST"])
+def comment():
+    if not user_commands.check_role("user"):
+        render_template("error.html", message=ERRORS["not_logged_in"])
+    user_commands.check_csrf()
+
+    stars = int(request.form["stars"])
+    if stars < 1 or stars > 5:
+        render_template("error.html", message="Virheellinen määrä tähtiä")
+    
+    comment_text = request.form["comment_text"]
+    if len(comment_text) < 2 or len(comment_text) > 500:
+        render_template("error.html", message="Liian lyhyt (2) tai pitkä (500) viesti")
+    recipe_id = request.form["recipe_id"]
+
+    if recipe_commands.add_comment(recipe_id, user_commands.user_id(), stars, comment_text):
+        return redirect("/recipe/"+recipe_id)
+    return render_template("error.html", message="Kommentin"+ERRORS["adding_failed"])
 
 @app.route("/addtolist/<int:id>")
 def addtolist(id):
     if shopping_list.add_to_list(id):
         return redirect("/viewrecipes")
-    return render_template("error.html", message="Ostoslistalle lisäys ei onnistunut. Tämä toimii vain kirjautuneilla käyttäjillä")
+    return render_template("error.html", message=ERRORS["not_logged_in"])
 
 @app.route("/shoppinglist", methods=["GET", "POST"])
 def shoppinglist():
-    if not user_commands.check_role("editor"):
-        return render_template("error.html", message="Tämä toimii vain kirjautuneilla käyttäjillä")
+    if not user_commands.check_role("user"):
+        return render_template("error.html", message=ERRORS["not_logged_in"])
 
     if request.method == "GET":
         current_list = shopping_list.get_shopping_list()
@@ -93,7 +120,7 @@ def shoppinglist():
 @app.route("/adminview/<int:type>")
 def adminview(type):
     if not user_commands.check_role("admin"):
-        return render_template("error.html", message="Ethän vain yrittänyt pääkäyttäjätoimintoihin ilman oikeuksia?")
+        return render_template("error.html", message=ERRORS["admin_access"])
     
     if type == 1:
         title = "user"
@@ -113,42 +140,42 @@ def adminview(type):
 @app.route("/deleteuser/<int:id>", methods=["POST"])
 def deleteuser(id):
     if not user_commands.check_role("admin"):
-        return render_template("error.html", message="Ethän vain yrittänyt pääkäyttäjätoimintoihin ilman oikeuksia?")
+        return render_template("error.html", message=ERRORS["admin_access"])
     user_commands.check_csrf()
     
     if user_commands.delete_user(id):
         return redirect("/adminview/1")
-    return render_template("error.html", message="Käyttäjän poisto ei onnistunut")
+    return render_template("error.html", message="Käyttäjän "+ERRORS["deleting_failed"])
 
 @app.route("/deleteingredient/<int:id>", methods=["POST"])
 def deleteingredient(id):
     if not user_commands.check_role("admin"):
-        return render_template("error.html", message="Ethän vain yrittänyt pääkäyttäjätoimintoihin ilman oikeuksia?")
+        return render_template("error.html", message=ERRORS["admin_access"])
     user_commands.check_csrf()
 
     if recipe_commands.delete_ingredient(id):
         return redirect("/adminview/2")
-    return render_template("error.html", message="Ainesosan poisto ei onnistunut")
+    return render_template("error.html", message="Ainesosan "+ERRORS["deleting_failed"])
 
 
 @app.route("/deleteunit/<int:id>", methods=["POST"])
 def deleteunit(id):
     if not user_commands.check_role("admin"):
-        return render_template("error.html", message="Ethän vain yrittänyt pääkäyttäjätoimintoihin ilman oikeuksia?")
+        return render_template("error.html", message=ERRORS["admin_access"])
     user_commands.check_csrf()
 
     if recipe_commands.delete_unit(id):
         return redirect("/adminview/3")
-    return render_template("error.html", message="Yksikön poisto ei onnistunut")
+    return render_template("error.html", message="Yksikön "+ERRORS["deleting_failed"])
 
 @app.route("/deleterecipe/<int:id>", methods=["POST"])
 def deleterecipe(id):
     if not user_commands.check_role("admin"):
-        return render_template("error.html", message="Ethän vain yrittänyt pääkäyttäjätoimintoihin ilman oikeuksia?")
+        return render_template("error.html", message=ERRORS["admin_access"])
     user_commands.check_csrf()
 
     if recipe_commands.delete_recipe(id):
         return redirect("/adminview/4")
-    return render_template("error.html", message="Reseptin poisto ei onnistunut")
+    return render_template("error.html", message="Reseptin "+ERRORS["deleting_failed"])
 
 
