@@ -13,7 +13,10 @@
         <input type="text" name="name" minlength="1" maxlength="50">
     </p>
 
-    <p>Ainekset, yksi per rivi muodossa (kpl yksikkö ainesosa), todellinen välilyönti on _, esimerkiksi kuivattu_tomaatti:<br>
+    <p>Ainekset, yksi per rivi muodossa (kpl yksikkö ainesosa)<br>
+       Vain yksi sana tulkitaan "maun mukaan", esim. "suolaa" -> 1 maunmukaan suolaa<br>
+       Kaksi sanaa tulkitaan, että väliin tulee kpl, esim. "1 sipuli" -> 1 kpl sipuli<br>
+       Jos ainesosan nimessä pitää olla välilyönti, niin se kirjoitetaan alaviivalla, esim. "1 dl kuivattuja linssejä" PITÄÄ olla "1 dl kuivattuja_linssejä"<br>
         <textarea name="ingredients" rows="8" cols="50" maxlength="10000"></textarea>
     </p>
 

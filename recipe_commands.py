@@ -2,7 +2,7 @@ from sqlalchemy import null
 from db import db
 
 def add_recipe(name, ingredients, steps):
-    if not check_length([(name, 30), (ingredients, 500), (steps, 1000)]):
+    if not check_length([(name, 30), (ingredients, 800), (steps, 2000)]):
         return False
     
     #TODO: make list_steps and list_ingredients -functions
@@ -12,6 +12,15 @@ def add_recipe(name, ingredients, steps):
     for i in range(len(ingredient_list)):
         #[amount, unit, name], replace unit and name with respective id's
         parts = ingredient_list[i].replace("\r", "").split(" ")
+
+        #assume that an article with just one row is 'to taste'
+        if len(parts) == 1:
+            parts = ["1", "maunmukaan", parts[0]]
+
+        #assume that an article without unit is one piece
+        if len(parts) == 2:
+            parts = [parts[0], "kpl", parts[1]]
+
         parts[0] = float(parts[0].replace(",", "."))
         parts[1] = get_unit_id(parts[1])
         parts[2] = get_ingredient_id(parts[2])
@@ -87,7 +96,7 @@ def get_recipe_name(id):
     return db.session.execute(sql, {"id": id}).fetchone()[0]
 
 def list_recipes():
-    sql = "SELECT id, name, servings, time FROM recipes WHERE visible = 1 ORDER BY name DESC"
+    sql = "SELECT id, name, COALESCE(servings, 0) as servings, COALESCE(time, '') as time FROM recipes WHERE visible = 1 ORDER BY name DESC"
     result = db.session.execute(sql).fetchall()
     return result
 
