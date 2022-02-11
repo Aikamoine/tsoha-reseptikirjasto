@@ -1,7 +1,7 @@
 from sqlalchemy import null
 from db import db
 
-def add_recipe(name, ingredients, steps):
+def add_recipe(name, ingredients, steps, servings, time):
     if not check_length([(name, 30), (ingredients, 800), (steps, 2000)]):
         return False
     
@@ -30,10 +30,18 @@ def add_recipe(name, ingredients, steps):
     for step in step_list:
         step = step.replace("\r","")
 
+    print(servings)
+    print(time)
+    print(isinstance(servings, int))
+    if len(servings) > 20:
+        servings = 0
+    if len(time) > 20:
+        time = ""
+
     try:
-        sql = "INSERT INTO recipes (name, visible) VALUES (:name, 1) RETURNING id"
+        sql = "INSERT INTO recipes (name, visible, servings, time) VALUES (:name, 1, :servings, :time) RETURNING id"
         recipe_id = db.session.execute(
-            sql, {"name": name}).fetchone()[0]
+            sql, {"name": name, "servings": servings, "time": time}).fetchone()[0]
 
         for ingredient in ingredient_list:
             sql = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, amount) VALUES (:recipe_id, :ingredient_id, :unit_id, :amount) RETURNING id"
@@ -102,7 +110,7 @@ def list_recipes():
 
 def list_ingredients(id):
     sql = "SELECT RI.amount as amount, U.name as unit, I.name as name FROM " \
-        "recipe_ingredients RI, units U, ingredients I WHERE RI.recipe_id=:id AND U.id=RI.unit_id AND I.id=RI.ingredient_id"
+        "recipe_ingredients RI, units U, ingredients I WHERE RI.recipe_id=:id AND U.id=RI.unit_id AND I.id=RI.ingredient_id ORDER BY RI.id ASC"
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result
 

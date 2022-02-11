@@ -59,9 +59,11 @@ def addrecipe():
     if request.method == "POST":
         user_commands.check_csrf()
         name = request.form["name"]
+        servings = request.form["servings"]
+        time = request.form["time"]
         ingredients = request.form["ingredients"]
         steps = request.form["steps"]
-        if recipe_commands.add_recipe(name, ingredients, steps):
+        if recipe_commands.add_recipe(name, ingredients, steps, servings, time):
             return redirect("/")
         else:
             return render_template("error.html", message="Reseptin"+ERRORS["adding_failed"])
