@@ -10,7 +10,7 @@ CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
     name TEXT,
     servings INTEGER,
-    time INTEGER,
+    time TEXT,
     visible INTEGER
 );
 
