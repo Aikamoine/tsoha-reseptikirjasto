@@ -107,7 +107,7 @@ def list_recipes():
     return result
 
 def list_ingredients(id):
-    sql = "SELECT RI.amount as amount, U.name as unit, I.name as name FROM " \
+    sql = "SELECT CASE WHEN RI.amount % 1 = 0 THEN RI.amount::INTEGER ELSE RI.amount END as amount, U.name as unit, I.name as name FROM " \
         "recipe_ingredients RI, units U, ingredients I WHERE RI.recipe_id=:id AND U.id=RI.unit_id AND I.id=RI.ingredient_id ORDER BY RI.id ASC"
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result

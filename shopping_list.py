@@ -32,7 +32,7 @@ def add_to_list(id):
     return True
 
 def get_shopping_list():
-    sql = "SELECT amount, title FROM shoppinglists WHERE user_id=:user_id"
+    sql = "SELECT CASE WHEN amount % 1 = 0 THEN amount:: INTEGER ELSE amount END as amount, title FROM shoppinglists WHERE user_id=:user_id"
     result = db.session.execute(sql, {
         "user_id": session["user_id"]}).fetchall()
     return result
