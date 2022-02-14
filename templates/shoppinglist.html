@@ -17,6 +17,11 @@
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 <br>
+<form action="/clearlist" method="POST">
+    <input type="submit" value="Tyhjennä lista">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
+<br>
 {% else %}
 <p>Ostoslistalla ei ole tällä hetkellä mitään</p>
 {% endif %}

@@ -31,9 +31,9 @@ Sovellus löytyy osoitteesta https://tsoha-reseptikirjasto.herokuapp.com.
   - ainesosien tarkistus / kirjoitusvirheiden eliminointi
    - aihetunnisteet/tagit
   - lisätieto-kenttä tai kenttä alkuperäisen reseptin lähteelle
-- reseptien lisäämisen parannukset
 - tilavuusyksiköiden tunnistaminen (esim. 1 rkl = 15 ml) ja yhteenlasku yhdenmukaisesti, esim. 1 tl + 1 rkl suolaa = 20 ml
  
 ### Laajempia ideoita / täsmennyksiä
 - Finelin sivuilta voisi tuoda ruoka-aineiden ravintoarvot ja sovellus voisi sitten laskea annosten ravintosisällön
+- Hakutulosten sivuttaminen. Tämä tuskin on tarpeen, koska ei palveluun olla lisäämässä älyttömiä määriä reseptejä
 

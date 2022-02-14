@@ -30,6 +30,7 @@ def login():
 
 @app.route("/logout")
 def logout():
+    shopping_list.reset_shopping_list()
     user_commands.logout()
     return redirect("/")
 
@@ -118,6 +119,13 @@ def shoppinglist():
         user_commands.check_csrf()
         shopping_list.remove_from_list(request.form.getlist("current_items"))
         return redirect("/shoppinglist")
+
+
+@app.route("/clearlist", methods=["POST"])
+def clearlist():
+    user_commands.check_csrf()
+    shopping_list.reset_shopping_list()
+    return redirect("/shoppinglist")
 
 @app.route("/adminview/<int:type>")
 def adminview(type):

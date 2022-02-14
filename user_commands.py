@@ -4,7 +4,6 @@ from itsdangerous import exc
 from sqlalchemy import null
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import db
-from shopping_list import reset_shopping_list
 
 ROLES = {"none": 0, "user": 1, "editor": 2, "admin": 3}
 
@@ -24,7 +23,6 @@ def login(username, password):
 
 
 def logout():
-    reset_shopping_list()
     del session["user_id"]
     del session["username"]
     del session["user_role"]
