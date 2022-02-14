@@ -5,34 +5,12 @@ def add_recipe(name, ingredients, steps, servings, time):
     if not check_length([(name, 30), (ingredients, 800), (steps, 2000)]):
         return False
     
-    #TODO: make list_steps and list_ingredients -functions
-    #TODO: remove empty strings/rows
-    #TODO: handle ingredient inputs not consisting of 3 words
-    ingredient_list = ingredients.split("\n")
-    for i in range(len(ingredient_list)):
-        #[amount, unit, name], replace unit and name with respective id's
-        parts = ingredient_list[i].replace("\r", "").split(" ")
-
-        #assume that an article with just one row is 'to taste'
-        if len(parts) == 1:
-            parts = ["1", "maunmukaan", parts[0]]
-
-        #assume that an article without unit is one piece
-        if len(parts) == 2:
-            parts = [parts[0], "kpl", parts[1]]
-
-        parts[0] = float(parts[0].replace(",", "."))
-        parts[1] = get_unit_id(parts[1])
-        parts[2] = get_ingredient_id(parts[2])
-        ingredient_list[i] = parts
+    ingredient_list = ingredients_from_input(ingredients)
     
     step_list = steps.split("\n")
     for step in step_list:
         step = step.replace("\r","")
 
-    print(servings)
-    print(time)
-    print(isinstance(servings, int))
     if len(servings) > 20:
         servings = 0
     if len(time) > 20:
@@ -65,6 +43,26 @@ def add_recipe(name, ingredients, steps, servings, time):
         return False
     
     return recipe_id
+
+def ingredients_from_input(text):
+    ingredient_list = text.split("\n")
+    for i in range(len(ingredient_list)):
+      #[amount, unit, name], replace unit and name with respective id's
+        parts = ingredient_list[i].replace("\r", "").split(" ")
+
+       #assume that an article with just one word is 'to taste'
+        if len(parts) == 1:
+            parts = ["1", "maunmukaan", parts[0]]
+
+        #assume that an article without unit is one piece
+        if len(parts) == 2:
+            parts = [parts[0], "kpl", parts[1]]
+
+        parts[0] = float(parts[0].replace(",", "."))
+        parts[1] = get_unit_id(parts[1])
+        parts[2] = get_ingredient_id(parts[2])
+        ingredient_list[i] = parts
+    return ingredient_list
 
 def get_ingredient_id(name):
     name = name.lower()
