@@ -7,8 +7,9 @@ Sovellus löytyy osoitteesta https://tsoha-reseptikirjasto.herokuapp.com.
 - etusivulta voi navigoida selailemaan reseptejä
   - [x] kaikki reseptit tulostuvat yhdelle listalle
   - [x] reseptejä voi hakea/suodattaa listalta
-  - [ ] resepteillä on tagit/tunnisteet, joiden perusteella voi suodattaa
-- pääkäyttäjä voi lisätä reseptin ja muokata olemassaolevaa
+  - [x] resepteillä on tagit/tunnisteet, joiden perusteella voi suodattaa
+  - KYSYMYS ARVIOIJALLE: onko käyttäjän kannalta kivempi, että on vain yksi hakukenttä, vai että jokaisella "otsikolla" on oma hakunsa?
+- pääkäyttäjä voi tehdä muutoksia käyttöliittymällä
   - [x] tällä hetkellä kuka vain käyttäjä voi lisätä reseptejä
   - [x] pääkäyttäjä voi poistaa
     - [x] käyttäjiä
@@ -21,9 +22,11 @@ Sovellus löytyy osoitteesta https://tsoha-reseptikirjasto.herokuapp.com.
     - [ ] reseptejä
     - [ ] ainesosia
     - [ ] yksiköitä
+    - [ ] tunnisteita
 - [x] reseptejä voi kommentoida
 - [x] istunnon aikana voi muodostaa "ostoslistan", jolle voi merkitä useamman reseptin, joiden aineisosat sovellus tallentaa yhdelle listalle 
   - [x] listalta voi poistaa jo kaapista löytyviä asioita helposti
+  - [x] lista poistetaan uloskirjautumisen yhteydessä
 
 ## Backlog (ei prioriteettijärjestyksessä)
 - reseptien lisäämisen parannukset

@@ -61,3 +61,9 @@ CREATE TABLE shoppinglists (
     title TEXT,
     amount NUMERIC(7,2)
 );
+
+CREATE TABLE recipe_tags (
+    id SERIAL PRIMARY KEY,
+    recipe_id INTEGER REFERENCES recipes,
+    tag_id INTEGER REFERENCES tags
+);
