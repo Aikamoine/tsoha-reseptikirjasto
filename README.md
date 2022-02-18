@@ -30,13 +30,13 @@ Sovellus löytyy osoitteesta https://tsoha-reseptikirjasto.herokuapp.com.
 
 ## Backlog (ei prioriteettijärjestyksessä)
 - reseptien lisäämisen parannukset
-  - syötteiden validoinnin tehostus
-  - ainesosien tarkistus / kirjoitusvirheiden eliminointi
-   - aihetunnisteet/tagit
   - lisätieto-kenttä tai kenttä alkuperäisen reseptin lähteelle
-- tilavuusyksiköiden tunnistaminen (esim. 1 rkl = 15 ml) ja yhteenlasku yhdenmukaisesti, esim. 1 tl + 1 rkl suolaa = 20 ml
+- eri tietueiden muokkausominaisuudet kuntoon
+
  
-### Laajempia ideoita / täsmennyksiä
+### Laajempia ideoita / täsmennyksiä (tehdään ehkä kurssin jälkeen)
 - Finelin sivuilta voisi tuoda ruoka-aineiden ravintoarvot ja sovellus voisi sitten laskea annosten ravintosisällön
 - Hakutulosten sivuttaminen. Tämä tuskin on tarpeen, koska ei palveluun olla lisäämässä älyttömiä määriä reseptejä
-
+- tilavuusyksiköiden tunnistaminen (esim. 1 rkl = 15 ml) ja yhteenlasku yhdenmukaisesti, esim. 1 tl + 1 rkl suolaa = 20 ml
+- syötteiden validoinnin tehostus
+- Reseptiä lisätessä käydään katsomassa mitkä kaikki ainesosat, yksiköt ja tunnisteet on jo kannassa. Käyttäjältä kysytään haluaako lisätä niitä mitä ei ole, vai haluaako muuttaa syötettä -> vältetään yksiköt "sipuli, sipulia" yms.
