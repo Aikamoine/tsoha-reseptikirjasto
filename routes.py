@@ -76,7 +76,7 @@ def addrecipe():
         if not recipe_commands.add_steps(recipe_id, request.form["steps"]):
             return render_template("error.html", message="Työvaiheiden"+ERRORS["adding_failed"])
 
-        return redirect("/")
+        return viewrecipes()
 
 @app.route("/viewrecipes")
 def viewrecipes():

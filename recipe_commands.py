@@ -135,10 +135,9 @@ def get_recipe_name(id):
     return db.session.execute(sql, {"id": id}).fetchone()[0]
 
 def list_recipes():
-    sql = "SELECT R.id, R.name, COALESCE(R.servings, 0) as servings, COALESCE(R.time, '') as time, TT.tags as tags FROM recipes R, " \
-        "(SELECT RT.recipe_id as recipe_id, STRING_AGG(T.tag,', ') as tags FROM tags T, recipe_tags RT WHERE T.id=RT.tag_id GROUP BY 1) TT " \
-        "WHERE R.id=TT.recipe_id AND R.visible = 1 ORDER BY name DESC;"
-    #ql = "SELECT id, name, COALESCE(servings, 0) as servings, COALESCE(time, '') as time FROM recipes WHERE visible = 1 ORDER BY name DESC"
+    sql = "SELECT id, name, COALESCE(servings, 0) as servings, COALESCE(time, '') as time, tags FROM recipes " \
+        "LEFT JOIN (SELECT RT.recipe_id as recipe_id, STRING_AGG(T.tag,', ') as tags FROM tags T, recipe_tags RT " \
+        "WHERE T.id=RT.tag_id GROUP BY 1) T ON recipes.id=T.recipe_id WHERE visible = 1"
     result = db.session.execute(sql).fetchall()
     return result
 
