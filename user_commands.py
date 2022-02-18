@@ -31,8 +31,8 @@ def logout():
 def add_user(username, password, role):
     hash_value = generate_password_hash(password)
     try:
-        sql = """INSERT INTO users (username, password, role)
-                 VALUES (:username, :password, :role)"""
+        sql = """INSERT INTO users (username, password, role, visible)
+                 VALUES (:username, :password, :role, 1)"""
         db.session.execute(
             sql, {"username": username, "password": hash_value, "role": role})
         db.session.commit()
