@@ -1,5 +1,4 @@
-from crypt import methods
-from curses import ERR
+from ctypes.wintypes import tagSIZE
 from app import app
 from flask import render_template, request, redirect, session
 import user_commands
@@ -59,15 +58,25 @@ def addrecipe():
         return render_template("addrecipe.html")
     if request.method == "POST":
         user_commands.check_csrf()
+
         name = request.form["name"]
         servings = request.form["servings"]
         time = request.form["time"]
-        ingredients = request.form["ingredients"]
-        steps = request.form["steps"]
-        if recipe_commands.add_recipe(name, ingredients, steps, servings, time):
-            return redirect("/")
-        else:
-            return render_template("error.html", message="Reseptin"+ERRORS["adding_failed"])
+        recipe_id = recipe_commands.add_recipe(name, servings, time)
+
+        if recipe_id == 0:
+            return render_template("error.html", message=f"Reseptin {name} lisäys ei onnistunut. Tuplanimi tai tietokantahäiriö.")
+
+        if not recipe_commands.add_tags(recipe_id, request.form["tags"]):
+            return render_template("error.html", message="Tunnisteiden"+ERRORS["adding_failed"])
+
+        if not recipe_commands.add_ingredients(recipe_id, request.form["ingredients"]):
+            return render_template("error.html", message="Ainesosien"+ERRORS["adding_failed"])
+        
+        if not recipe_commands.add_steps(recipe_id, request.form["steps"]):
+            return render_template("error.html", message="Työvaiheiden"+ERRORS["adding_failed"])
+
+        return redirect("/")
 
 @app.route("/viewrecipes")
 def viewrecipes():

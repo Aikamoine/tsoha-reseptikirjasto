@@ -1,50 +1,83 @@
+from unittest import result
 from sqlalchemy import null
 from db import db
 
-def add_recipe(name, ingredients, steps, servings, time):
-    if not check_length([(name, 30), (ingredients, 800), (steps, 2000)]):
-        return False
-    
-    ingredient_list = ingredients_from_input(ingredients)
-    
-    step_list = steps.split("\n")
-    for step in step_list:
-        step = step.replace("\r","")
-
-    if len(servings) > 20:
-        servings = 0
-    if len(time) > 20:
-        time = ""
-
+def add_recipe(name, servings, time):
     try:
-        sql = "INSERT INTO recipes (name, visible, servings, time) VALUES (:name, 1, :servings, :time) RETURNING id"
-        recipe_id = db.session.execute(
+        sql = "SELECT 1 FROM recipes WHERE name=:name"
+        if db.session.execute(sql, {"name": name}).fetchone():
+            return 0
+
+        sql = "INSERT INTO recipes (name, servings, time, visible) VALUES (:name, :servings, :time, 1) RETURNING id"
+        id = db.session.execute(
             sql, {"name": name, "servings": servings, "time": time}).fetchone()[0]
 
-        for ingredient in ingredient_list:
-            sql = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, amount) VALUES (:recipe_id, :ingredient_id, :unit_id, :amount) RETURNING id"
-            ing_id = db.session.execute(sql, {
-                               "recipe_id": recipe_id,
-                               "ingredient_id": ingredient[2],
-                               "unit_id": ingredient[1],
-                               "amount": ingredient[0]
-                               }).fetchone()[0]
-        
-        for i in range(len(step_list)):
-            sql = "INSERT INTO recipe_steps (recipe_id, step, number) VALUES (:recipe_id, :step, :number) RETURNING id"
-            step_id = db.session.execute(sql, {
-                "recipe_id": recipe_id,
-                "step": step_list[i],
-                "number": i,
-            }).fetchone()[0]
-
         db.session.commit()
+        return id
     except:
-        return False
-    
-    return recipe_id
+        return 0
 
-def ingredients_from_input(text):
+def add_tags(recipe_id, tag_string):
+    tag_list = tag_string.replace(" ", "").replace("\r", "").split(",")
+    for tag in tag_list:
+        tag_id = get_tag_id(tag)
+        try:
+            sql = "INSERT INTO recipe_tags (recipe_id, tag_id) VALUES (:recipe_id, :tag_id)"
+            db.session.execute(sql, {"recipe_id" : recipe_id, "tag_id": tag_id})
+            db.session.commit()
+        except:
+            return False
+    return True
+
+def get_tag_id(tag):
+    tag = tag.lower()
+    try:
+        sql = "SELECT id, tag FROM tags WHERE tag=:tag"
+        result = db.session.execute(sql, {"tag": tag}).fetchone()
+
+        if result:
+            return result[0]
+
+        sql = "INSERT INTO tags (tag) VALUES (:tag) RETURNING id"
+        id = db.session.execute(sql, {"tag": tag}).fetchone()[0]
+    except:
+        return 0
+    db.session.commit()
+    return id
+
+def add_ingredients(recipe_id, ingredient_string):
+    ingredient_list = ingredients_from_string(ingredient_string)
+    for ingredient in ingredient_list:
+        try:
+            sql = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, amount) VALUES (:recipe_id, :ingredient_id, :unit_id, :amount)"
+            db.session.execute(sql, {
+                "recipe_id": recipe_id,
+                "ingredient_id": ingredient[2],
+                "unit_id": ingredient[1],
+                "amount": ingredient[0]
+            })    
+        except:
+            return False
+    db.session.commit()
+    return True
+
+def add_steps(recipe_id, steps_string):
+    step_list= steps_string.split("\n")
+
+    for i in range(len(step_list)):
+        step = step_list[i].replace("\r", "")
+        try:
+            sql = "INSERT INTO recipe_steps (recipe_id, step, number) VALUES (:recipe_id, :step, :number)"
+            db.session.execute(sql, {
+                "recipe_id": recipe_id,
+                "step": step,
+                "number": i})
+        except:
+            return False
+    db.session.commit()
+    return True
+
+def ingredients_from_string(text):
     ingredient_list = text.split("\n")
     for i in range(len(ingredient_list)):
       #[amount, unit, name], replace unit and name with respective id's
@@ -138,7 +171,7 @@ def list_all_units():
 
 def get_comments(id):
     sql = "SELECT U.username as name, C.stars as stars, C.comment as text FROM " \
-        "comments C, users U WHERE C.user_id=U.id AND C.recipe_id=:id"
+        "comments C, users U WHERE C.user_id=U.id AND C.recipe_id=:id AND c.visible=1"
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result
 
@@ -146,8 +179,6 @@ def add_comment(recipe_id, user_id, stars, comment_text):
     try:
         sql = "INSERT INTO comments (user_id, recipe_id, stars, comment, visible) VALUES " \
             "(:user_id, :recipe_id, :stars, :comment, 1)"
-        print(
-            f"INSERT INTO comments (user_id, recipe_id, stars, comment, visible) VALUES ({user_id}, {recipe_id}, {stars}, {comment_text}, 1)")
         db.session.execute(sql, {
             "user_id": user_id,
             "recipe_id": recipe_id,
