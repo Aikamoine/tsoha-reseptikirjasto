@@ -14,7 +14,7 @@
 <br>
 
 {% for step in steps %}
-<li>{{ step.order }}: {{ step.step }}</li>
+{{ step.order }}: {{ step.step }}<br>
 {% endfor %}
 <br>
 <p><a href="/addtolist/{{ id }}"{{ id }}>Lisää ostoslistalle</a></p>
