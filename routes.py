@@ -38,9 +38,18 @@ def adduser():
     if request.method == "GET":
         return render_template("adduser.html")
     if request.method == "POST":
+        user_commands.check_csrf()
+        
         username = request.form["username"]
         password1 = request.form["password1"]
         password2 = request.form["password2"]
+
+        length_check = check_length([
+            (username, 3, 30),
+            (password1, 8, 100)])
+        if not length_check == "ok":
+            return render_template("error.html", message=length_check)
+
         if password1 != password2:
             return render_template("error.html", message="Salasanat eroavat")
         if user_commands.add_user(username, password1, "user"):
@@ -62,18 +71,31 @@ def addrecipe():
         name = request.form["name"]
         servings = request.form["servings"]
         time = request.form["time"]
-        recipe_id = recipe_commands.add_recipe(name, servings, time)
+        tags = request.form["tags"]
+        ingredients = request.form["ingredients"]
+        steps = request.form["steps"]
 
+        length_check = check_length([
+            (name, 3, 30),
+            (ingredients, 5, 800),
+            (steps, 5, 2000),
+            (time, 0, 20),
+            (tags, 0, 50),
+            (servings, 0, 20)])
+        if not length_check=="ok":
+            return render_template("error.html", message=length_check)
+
+        recipe_id = recipe_commands.add_recipe(name, servings, time)
         if recipe_id == 0:
             return render_template("error.html", message=f"Reseptin {name} lisäys ei onnistunut. Tuplanimi tai tietokantahäiriö.")
 
-        if not recipe_commands.add_tags(recipe_id, request.form["tags"]):
+        if not recipe_commands.add_tags(recipe_id, tags):
             return render_template("error.html", message="Tunnisteiden"+ERRORS["adding_failed"])
 
-        if not recipe_commands.add_ingredients(recipe_id, request.form["ingredients"]):
+        if not recipe_commands.add_ingredients(recipe_id, ingredients):
             return render_template("error.html", message="Ainesosien"+ERRORS["adding_failed"])
         
-        if not recipe_commands.add_steps(recipe_id, request.form["steps"]):
+        if not recipe_commands.add_steps(recipe_id, steps):
             return render_template("error.html", message="Työvaiheiden"+ERRORS["adding_failed"])
 
         return viewrecipes()
@@ -102,8 +124,11 @@ def comment():
         render_template("error.html", message="Virheellinen määrä tähtiä")
     
     comment_text = request.form["comment_text"]
-    if len(comment_text) < 2 or len(comment_text) > 500:
-        render_template("error.html", message="Liian lyhyt (2) tai pitkä (500) viesti")
+
+    length_check = check_length([(comment_text, 2, 500)])
+    if not length_check == "ok":
+        return render_template("error.html", message=length_check)
+
     recipe_id = request.form["recipe_id"]
 
     if recipe_commands.add_comment(recipe_id, user_commands.user_id(), stars, comment_text):
@@ -197,4 +222,18 @@ def deleterecipe(id):
         return redirect("/adminview/4")
     return render_template("error.html", message="Reseptin "+ERRORS["deleting_failed"])
 
+def check_length(tocheck):
+    """Checks a list against maximum lenghts
 
+    Args:
+        tocheck ([list]): list of tuples, which are (text, min_length, max_length)
+
+    Returns:
+        [boolean]: True, if all elements match their assigned max length
+    """
+    for element in tocheck:
+        if len(element[0]) > element[2]:
+            return f"syöte {element[0]} on liian pitkä, maksimi {element[2]}"
+        if len(element[0]) < element[1]:
+            return f"syöte {element[0]} on liian lyhyt, minimi {element[1]}"
+    return "ok"

@@ -188,20 +188,6 @@ def add_comment(recipe_id, user_id, stars, comment_text):
         return False
     return True
 
-def check_length(tocheck):
-    """Checks a list against maximum lenghts
-
-    Args:
-        tocheck ([list]): list of tuples, first value is text, second max length
-
-    Returns:
-        [boolean]: True, if all elements match their assigned max length
-    """
-    for element in tocheck:
-        if len(element[0]) > element[1]:
-            return False
-    return True
-
 def delete_ingredient(id):
     try:
         sql = "UPDATE ingredients SET visible=0 WHERE id=:id"
