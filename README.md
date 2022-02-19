@@ -35,8 +35,6 @@ Pääkäyttäjänäkymiin (jotka eivät ihan hirveän paljon tee) pääsee etusi
   - [x] lista poistetaan uloskirjautumisen yhteydessä
 
 ## Backlog (ei prioriteettijärjestyksessä)
-- reseptien lisäämisen parannukset
-  - lisätieto-kenttä tai kenttä alkuperäisen reseptin lähteelle
 - eri tietueiden muokkausominaisuudet kuntoon
 
  
@@ -44,5 +42,7 @@ Pääkäyttäjänäkymiin (jotka eivät ihan hirveän paljon tee) pääsee etusi
 - Finelin sivuilta voisi tuoda ruoka-aineiden ravintoarvot ja sovellus voisi sitten laskea annosten ravintosisällön
 - Hakutulosten sivuttaminen. Tämä tuskin on tarpeen, koska ei palveluun olla lisäämässä älyttömiä määriä reseptejä
 - tilavuusyksiköiden tunnistaminen (esim. 1 rkl = 15 ml) ja yhteenlasku yhdenmukaisesti, esim. 1 tl + 1 rkl suolaa = 20 ml
-- syötteiden validoinnin tehostus
-- Reseptiä lisätessä käydään katsomassa mitkä kaikki ainesosat, yksiköt ja tunnisteet on jo kannassa. Käyttäjältä kysytään haluaako lisätä niitä mitä ei ole, vai haluaako muuttaa syötettä -> vältetään yksiköt "sipuli, sipulia" yms.
+- reseptien lisäämisen parannukset
+  - lisätieto-kenttä tai kenttä alkuperäisen reseptin lähteelle
+  - syötteiden validoinnin tehostus
+  - Reseptiä lisätessä käydään katsomassa mitkä kaikki ainesosat, yksiköt ja tunnisteet on jo kannassa. Käyttäjältä kysytään haluaako lisätä niitä mitä ei ole, vai haluaako muuttaa syötettä -> vältetään yksiköt "sipuli, sipulia" yms.
