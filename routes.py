@@ -1,3 +1,4 @@
+from contextlib import redirect_stdout
 from ctypes.wintypes import tagSIZE
 from app import app
 from flask import render_template, request, redirect, session
@@ -163,7 +164,9 @@ def clearlist():
 
 @app.route("/editrecipe/<int:id>")
 def editrecipe(id):
-    user_commands.check_role("admin")
+    if not user_commands.check_role("admin"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+    
     name = recipe_commands.get_recipe_name(id)
     ingredients = recipe_commands.list_ingredients(id)
     steps = recipe_commands.list_steps(id)
@@ -177,16 +180,28 @@ def deleteingredient(id):
 
     if recipe_commands.delete_recipe_ingredient(request.form["ingredient_id"]):
         return redirect(f"/editrecipe/{id}")
-    return render_template("error.html", message="Ainesosan "+ERRORS["deleting_failed"])
+    return render_template("error.html", message="Ainesosan"+ERRORS["deleting_failed"])
 
 @app.route("/deletestep/<int:id>", methods=["POST"])
 def deletestep(id):
     user_commands.check_csrf()
     if not user_commands.check_role("admin"):
         return render_template("error.html", message=ERRORS["admin_access"])
+
     if recipe_commands.delete_recipe_step(request.form["step_id"]):
         return redirect(f"/editrecipe/{id}")
-    return render_template("error.html", message="Työvaiheen "+ERRORS["deleting_failed"])
+    return render_template("error.html", message="Työvaiheen"+ERRORS["deleting_failed"])
+
+
+@app.route("/fulldelete/<int:id>", methods=["POST"])
+def fulldelete(id):
+    user_commands.check_csrf()
+    if not user_commands.check_role("admin"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+
+    if recipe_commands.full_delete_recipe(id):
+        return redirect("/viewrecipes")
+    return render_template("error.html", message="Reseptin"+ERRORS["deleting_failed"])
 
 @app.route("/adminview/<int:type>")
 def adminview(type):

@@ -207,9 +207,39 @@ def delete_recipe_ingredient(id):
         return False
     return True
 
-def delete_recipe_step(id):
+def delete_recipe_step(step_id):
     try:
+        sql = "SELECT recipe_id, number FROM recipe_steps WHERE id=:id"
+        result = db.session.execute(sql, {"id": step_id}).fetchone()
+        
         sql = "DELETE FROM recipe_steps WHERE id=:id"
+        db.session.execute(sql, {"id": step_id})
+
+        sql = "UPDATE recipe_steps SET number = number-1 WHERE recipe_id=:recipe_id AND number>=:number"
+        db.session.execute(sql, {"recipe_id": result[0], "number": result[1]})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+
+def full_delete_recipe(id):
+    try:
+
+        #TODO: figure out how to ON DELETE CASCADE this...
+        sql = "DELETE FROM recipe_steps WHERE recipe_id=:id"
+        db.session.execute(sql, {"id": id})
+
+        sql = "DELETE FROM recipe_ingredients WHERE recipe_id=:id"
+        db.session.execute(sql, {"id": id})
+
+        sql = "DELETE FROM comments WHERE recipe_id=:id"
+        db.session.execute(sql, {"id": id})
+
+        sql = "DELETE FROM recipe_tags WHERE recipe_id=:id"
+        db.session.execute(sql, {"id": id})
+
+        sql = "DELETE FROM recipes WHERE id=:id"
         db.session.execute(sql, {"id": id})
         db.session.commit()
     except:
