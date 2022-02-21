@@ -142,13 +142,13 @@ def list_recipes():
     return result
 
 def list_ingredients(id):
-    sql = "SELECT CASE WHEN RI.amount % 1 = 0 THEN RI.amount::INTEGER ELSE RI.amount END as amount, U.name as unit, I.name as name FROM " \
+    sql = "SELECT RI.id, CASE WHEN RI.amount % 1 = 0 THEN RI.amount::INTEGER ELSE RI.amount END as amount, U.name as unit, I.name as name FROM " \
         "recipe_ingredients RI, units U, ingredients I WHERE RI.recipe_id=:id AND U.id=RI.unit_id AND I.id=RI.ingredient_id ORDER BY RI.id ASC"
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result
 
 def list_steps(id):
-    sql = "SELECT step, number+1 as order FROM recipe_steps WHERE recipe_id=:id ORDER BY number ASC"
+    sql = "SELECT id, step, number+1 as order FROM recipe_steps WHERE recipe_id=:id ORDER BY number ASC"
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result
 
@@ -191,6 +191,25 @@ def add_comment(recipe_id, user_id, stars, comment_text):
 def delete_ingredient(id):
     try:
         sql = "UPDATE ingredients SET visible=0 WHERE id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+
+def delete_recipe_ingredient(id):
+    try:
+        sql = "DELETE FROM recipe_ingredients WHERE id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def delete_recipe_step(id):
+    try:
+        sql = "DELETE FROM recipe_steps WHERE id=:id"
         db.session.execute(sql, {"id": id})
         db.session.commit()
     except:

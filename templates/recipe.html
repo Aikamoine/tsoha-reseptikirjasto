@@ -51,5 +51,8 @@
     </form>
 {% endif %}
 
+{% if session.user_role == "admin" %}
+    <a href="/editrecipe/{{ id }}">Muokkaa reseptiä</a><br>
+{% endif %}
 <a href="/viewrecipes">Takaisin</a>
 {% endblock %}
