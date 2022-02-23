@@ -38,9 +38,7 @@ def logout():
 def adduser():
     if request.method == "GET":
         return render_template("adduser.html")
-    if request.method == "POST":
-        user_commands.check_csrf()
-        
+    if request.method == "POST":        
         username = request.form["username"]
         password1 = request.form["password1"]
         password2 = request.form["password2"]
@@ -170,7 +168,8 @@ def editrecipe(id):
     name = recipe_commands.get_recipe_name(id)
     ingredients = recipe_commands.list_ingredients(id)
     steps = recipe_commands.list_steps(id)
-    return render_template("editrecipe.html", id=id, name=name, ingredients=ingredients, steps=steps)
+    comments = recipe_commands.get_comments(id)
+    return render_template("editrecipe.html", id=id, name=name, ingredients=ingredients, steps=steps, comments=comments)
 
 @app.route("/deleteingredient/<int:id>", methods=["POST"])
 def deleteingredient(id):
@@ -189,6 +188,16 @@ def deletestep(id):
         return render_template("error.html", message=ERRORS["admin_access"])
 
     if recipe_commands.delete_recipe_step(request.form["step_id"]):
+        return redirect(f"/editrecipe/{id}")
+    return render_template("error.html", message="Työvaiheen"+ERRORS["deleting_failed"])
+
+@app.route("/deletecomment/<int:id>", methods=["POST"])
+def deletecomment(id):
+    user_commands.check_csrf()
+    if not user_commands.check_role("admin"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+
+    if recipe_commands.delete_comment(request.form["comment_id"]):
         return redirect(f"/editrecipe/{id}")
     return render_template("error.html", message="Työvaiheen"+ERRORS["deleting_failed"])
 

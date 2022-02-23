@@ -169,7 +169,7 @@ def list_all_units():
     return result
 
 def get_comments(id):
-    sql = "SELECT U.username as name, C.stars as stars, C.comment as text FROM " \
+    sql = "SELECT U.username as name, C.id as id, C.stars as stars, C.comment as text FROM " \
         "comments C, users U WHERE C.user_id=U.id AND C.recipe_id=:id AND c.visible=1"
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result
@@ -222,6 +222,14 @@ def delete_recipe_step(step_id):
         return False
     return True
 
+def delete_comment(comment_id):
+    try:
+        sql = "UPDATE comments SET visible=0 WHERE id=:id"
+        db.session.execute(sql, {"id": comment_id})
+        db.session.commit()
+    except:
+        return False
+    return True
 
 def full_delete_recipe(id):
     try:

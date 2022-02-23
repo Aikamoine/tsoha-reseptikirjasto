@@ -28,6 +28,16 @@
 </li>
 {% endfor %}
 <br>
+{% for comment in comments %}
+<li>{{ comment.name }}: ({{ comment.stars }} tähteä) {{ comment.text }}
+    <form action="/deletecomment/{{ id }}" method="POST" onsubmit="return confirm('Haluatko varmasti poistaa tämän?');">
+        <input type="submit" value="Poista">
+        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    </form>
+</li>
+{% endfor %}
+<br>
 <form action="/fulldelete/{{ id }}" method="POST" onsubmit="return confirm('Haluatko varmasti poistaa koko reseptin? Tätä ei voi perua');">
     <input type="submit" value="Poista resepti">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
