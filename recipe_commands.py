@@ -142,8 +142,13 @@ def list_recipes():
     return result
 
 def list_ingredients(id):
-    sql = "SELECT RI.id, CASE WHEN RI.amount % 1 = 0 THEN RI.amount::INTEGER ELSE RI.amount END as amount, U.name as unit, I.name as name FROM " \
-        "recipe_ingredients RI, units U, ingredients I WHERE RI.recipe_id=:id AND U.id=RI.unit_id AND I.id=RI.ingredient_id ORDER BY RI.id ASC"
+    sql = "SELECT RI.id, " \
+	    "CASE WHEN RI.amount % 1 = 0 THEN RI.amount:: INTEGER ELSE RI.amount END as amount, " \
+	    "U.name as unit, I.name as name " \
+        "FROM recipe_ingredients RI " \
+        "LEFT JOIN units U ON RI.unit_id=U.id " \
+        "LEFT JOIN ingredients I ON RI.ingredient_id=I.id " \
+        "WHERE RI.recipe_id=:id ORDER BY RI.id ASC"
     result = db.session.execute(sql, {"id": id}).fetchall()
     return result
 
@@ -172,6 +177,12 @@ def get_comments(id):
     sql = "SELECT U.username as name, C.id as id, C.stars as stars, C.comment as text FROM " \
         "comments C, users U WHERE C.user_id=U.id AND C.recipe_id=:id AND c.visible=1"
     result = db.session.execute(sql, {"id": id}).fetchall()
+    return result
+
+def get_average_stars(id):
+    sql = "SELECT ROUND(AVG(stars), 1) as avg, COUNT(stars) FROM comments WHERE recipe_id=:id AND visible=1"
+    result = db.session.execute(sql, {"id": id}).fetchone()
+    print(result)
     return result
 
 def add_comment(recipe_id, user_id, stars, comment_text):

@@ -110,7 +110,8 @@ def recipe(id):
     ingredient_list = recipe_commands.list_ingredients(id)
     step_list = recipe_commands.list_steps(id)
     comments = recipe_commands.get_comments(id)
-    return render_template("recipe.html", id=id, name=name, ingredients=ingredient_list, steps=step_list, comments=comments)
+    average = recipe_commands.get_average_stars(id)
+    return render_template("recipe.html", id=id, name=name, ingredients=ingredient_list, steps=step_list, comments=comments, avg=average)
 
 @app.route("/comment", methods=["POST"])
 def comment():

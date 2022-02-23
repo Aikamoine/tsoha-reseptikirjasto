@@ -7,7 +7,7 @@ current_list = {}
 def add_to_list(id):
     to_add = list_ingredients(id)
     for ingredient in to_add:
-        title = f"{ingredient[1]} {ingredient[2]}"
+        title = f"{ingredient[2]} {ingredient[3]}"
         try:
             sql = "SELECT amount FROM shoppinglists WHERE user_id=:user_id AND title=:title"
             result = db.session.execute(sql, {
@@ -18,12 +18,12 @@ def add_to_list(id):
                 db.session.execute(sql, {
                     "user_id": session["user_id"],
                     "title": title,
-                    "amount": ingredient[0]})
+                    "amount": ingredient[1]})
 
             else:
                 sql = "UPDATE shoppinglists SET amount=:amount WHERE user_id=:user_id AND title=:title"
                 db.session.execute(sql, {
-                    "amount": result[0] + ingredient[0],
+                    "amount": result[0] + ingredient[1],
                     "user_id": session["user_id"],
                     "title": title})
         except:

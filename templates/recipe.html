@@ -6,7 +6,9 @@
 {% block content %}
 
 <h2>{{ name }}</h2>
-<br>
+{% if comments %}
+{{ avg.avg }} keskiarvo {{ avg.count }} arvostelulla
+{% endif %}
 <hr>
 {% for ingredient in ingredients %}
 <li>{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</li>
