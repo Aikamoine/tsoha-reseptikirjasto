@@ -172,16 +172,6 @@ def editrecipe(id):
     comments = recipe_commands.get_comments(id)
     return render_template("editrecipe.html", id=id, name=name, ingredients=ingredients, steps=steps, comments=comments)
 
-@app.route("/deleteingredient/<int:id>", methods=["POST"])
-def deleteingredient(id):
-    user_commands.check_csrf()
-    if not user_commands.check_role("admin"):
-        return render_template("error.html", message=ERRORS["admin_access"])
-
-    if recipe_commands.delete_recipe_ingredient(request.form["ingredient_id"]):
-        return redirect(f"/editrecipe/{id}")
-    return render_template("error.html", message="Ainesosan"+ERRORS["deleting_failed"])
-
 @app.route("/deletestep/<int:id>", methods=["POST"])
 def deletestep(id):
     user_commands.check_csrf()
@@ -242,6 +232,25 @@ def deleteuser(id):
     if user_commands.delete_user(id):
         return redirect("/adminview/1")
     return render_template("error.html", message="Käyttäjän "+ERRORS["deleting_failed"])
+
+@app.route("/editingredients")
+def editingredients():
+    if not user_commands.check_role("admin"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+
+    ingredients = recipe_commands.list_all_ingredients()
+    return render_template("editingredients.html", ingredients=ingredients)
+
+@app.route("/updateingredient/<int:id>", methods=["POST"])
+def updateingredient(id):
+    
+    user_commands.check_csrf()
+    if not user_commands.check_role("admin"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+
+    if recipe_commands.update_recipe_ingredient(request.form["ingredient_id"], request.form["new_ingredient"]):
+        return redirect(f"/editingredients")
+    return render_template("error.html", message="Ainesosan"+ERRORS["deleting_failed"])
 
 @app.route("/deleteunit/<int:id>", methods=["POST"])
 def deleteunit(id):

@@ -159,7 +159,9 @@ def list_steps(id):
 
 def list_all_ingredients():
     try:
-        sql = "SELECT id, name FROM ingredients WHERE visible = 1"
+        sql = "SELECT i.id, i.name, COUNT(ri.ingredient_id) as amt FROM recipe_ingredients ri " \
+            "LEFT JOIN ingredients i ON i.id = ri.ingredient_id " \
+            "GROUP BY i.id, i.name ORDER BY i.name"
         result = db.session.execute(sql)
     except:
         return False
@@ -167,7 +169,9 @@ def list_all_ingredients():
 
 def list_all_units():
     try:
-        sql = "SELECT id, name FROM units WHERE visible = 1"
+        sql = "SELECT i.name, COUNT(ri.ingredient_id) as amt FROM recipe_ingredients ri " \
+            "LEFT JOIN ingredients i ON i.id = ri.ingredient_id " \
+            "GROUP BY i.name ORDER BY i.name"
         result = db.session.execute(sql)
     except:
         return False
@@ -199,20 +203,25 @@ def add_comment(recipe_id, user_id, stars, comment_text):
         return False
     return True
 
-def delete_ingredient(id):
+def update_recipe_ingredient(id, new_value):
     try:
-        sql = "UPDATE ingredients SET visible=0 WHERE id=:id"
-        db.session.execute(sql, {"id": id})
-        db.session.commit()
-    except:
-        return False
-    return True
+        print("alku")
+        sql = "SELECT id FROM ingredients WHERE name=:name"
+        result = db.session.execute(sql, {"name": new_value}).fetchone()
+        if result:
+            new_id = result[0]
+        else:
+            print("else")
+            sql = "INSERT INTO ingredients (name, visible) VALUES (:name, 1) RETURNING id"
+            new_id = db.session.execute(sql, {"name": new_value}).fetchone()[0]
+        print(f"new_id {new_id}")
+        sql = "UPDATE recipe_ingredients SET ingredient_id=:new_id WHERE ingredient_id=:id"
+        db.session.execute(sql, {"id": id, "new_id": new_id})
 
-
-def delete_recipe_ingredient(id):
-    try:
-        sql = "DELETE FROM recipe_ingredients WHERE id=:id"
+        print("update")
+        sql = "DELETE FROM recipe_ingredients WHERE ingredient_id=:id"
         db.session.execute(sql, {"id": id})
+        print("delete")
         db.session.commit()
     except:
         return False

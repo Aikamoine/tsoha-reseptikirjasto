@@ -1,0 +1,57 @@
+<!doctype html>
+{% extends "layout.html" %}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+{% block title %}{% endblock %}
+{% block content %}
+
+<h2>Muokkaa ainesosia</h2>
+<p>Listalla näkee kuinka monessa reseptissä kutakin ainesosaa on käytetty. Tekstilaatikkoon voi syöttää ainesosan, jolla haluaa korvata nykyisen</p>
+<br>
+<hr>
+
+<input type="text" id="searchField" onkeyup="recipeSearch('searchField', 0)" placeholder="Suodata ainesosia...">
+
+<table id="ingredient_list" class="table table-striped table-bordered table-sm">
+    <tr>
+        <th>Ainesosa</th>
+        <th>Käytössä</th>
+        <th>Uusi arvo</th>
+        <th>Päivitä</th>
+    </tr>
+    {% for item in ingredients %}
+    <tr>
+        <td>{{ item.name }} </td>
+        <td>{{ item.amt }}</td>
+        <form action="/updateingredient/{{ item.id }}" method="POST">
+            <td><input type="text" name="new_ingredient" minlength="1" maxlength="50"></td> 
+            <td><input type="submit" value="Korvaa"></td>
+            <input type="hidden" name="ingredient_id" value="{{ item.id }}">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        </form>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    function recipeSearch(elementId, tableIndex) {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById(elementId);
+        filter = input.value.toUpperCase();
+        table = document.getElementById("ingredient_list");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[tableIndex];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}
