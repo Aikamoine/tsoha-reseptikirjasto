@@ -67,3 +67,4 @@ CREATE TABLE recipe_tags (
     recipe_id INTEGER REFERENCES recipes,
     tag_id INTEGER REFERENCES tags
 );
+

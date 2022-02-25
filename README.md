@@ -14,19 +14,16 @@ Pääkäyttäjänäkymiin (jotka eivät ihan hirveän paljon tee) pääsee etusi
   - [x] kaikki reseptit tulostuvat yhdelle listalle
   - [x] reseptejä voi hakea/suodattaa listalta
   - [x] resepteillä on tagit/tunnisteet, joiden perusteella voi suodattaa
-  - KYSYMYS ARVIOIJALLE: onko käyttäjän kannalta kivempi, että on vain yksi hakukenttä, vai että jokaisella "otsikolla" on oma hakunsa?
 - pääkäyttäjä voi tehdä muutoksia käyttöliittymällä
   - [x] tällä hetkellä kuka vain käyttäjä voi lisätä reseptejä
   - [x] pääkäyttäjä voi poistaa
     - [x] käyttäjiä
     - [x] reseptejä
-    - [x] ainesosia, mutta ei vaikuta mihinkään
-    - [x] yksiköitä, mutta ei vaikuta mihinkään
-    - [ ] kommentteja
+    - [x] kommentteja
   - [x] pääkäyttäjä voi muokata
-    - [ ] kommentteja
     - [ ] reseptejä
-    - [ ] ainesosia
+      - vaiheiden, ainesosien tai koko reseptin poisto onnistuu tällä hetkellä
+    - [x] ainesosia
     - [ ] yksiköitä
     - [ ] tunnisteita
 - [x] reseptejä voi kommentoida
@@ -46,3 +43,4 @@ Pääkäyttäjänäkymiin (jotka eivät ihan hirveän paljon tee) pääsee etusi
   - lisätieto-kenttä tai kenttä alkuperäisen reseptin lähteelle
   - syötteiden validoinnin tehostus
   - Reseptiä lisätessä käydään katsomassa mitkä kaikki ainesosat, yksiköt ja tunnisteet on jo kannassa. Käyttäjältä kysytään haluaako lisätä niitä mitä ei ole, vai haluaako muuttaa syötettä -> vältetään yksiköt "sipuli, sipulia" yms.
+- valmistusajat pudotusvalikoksi suoran tekstisyötteen sijaan, voisi ehkä tallentaa omaan tauluunsa
