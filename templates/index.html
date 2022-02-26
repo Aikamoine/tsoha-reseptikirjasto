@@ -12,10 +12,11 @@
                 <br>
                 {% if session.user_role == "admin" %}
                 <p>Olet pääkäyttäjä, nice!</p>
-                <a href="/adminview/1">Hallitse käyttäjiä</a><br>
-                <a href="/editingredients">Hallitse ainesosia</a><br>
-                <a href="/adminview/3">Hallitse yksiköitä</a><br>
-                <a href="/adminview/4">Hallitse reseptejä</a><br>
+                <a href="/edit/users">Hallitse käyttäjiä</a><br>
+                <a href="/edit/ingredients">Hallitse ainesosia</a><br>
+                <a href="/edit/units">Hallitse yksiköitä</a><br>
+                <a href="/edit/tags">Hallitse tunnisteita</a><br>
+                <a href="/edit/recipes">Hallitse reseptejä</a><br>
                 {% endif %}
             </div>
         </div>

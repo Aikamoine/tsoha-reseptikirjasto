@@ -169,13 +169,80 @@ def list_all_ingredients():
 
 def list_all_units():
     try:
-        sql = "SELECT i.name, COUNT(ri.ingredient_id) as amt FROM recipe_ingredients ri " \
-            "LEFT JOIN ingredients i ON i.id = ri.ingredient_id " \
-            "GROUP BY i.name ORDER BY i.name"
+        sql = "SELECT u.id, u.name, COUNT(ri.unit_id) as amt FROM recipe_ingredients ri " \
+            "LEFT JOIN units u ON u.id = ri.unit_id " \
+            "GROUP BY u.id, u.name ORDER BY u.name"
         result = db.session.execute(sql)
     except:
         return False
     return result
+
+def list_all_tags():
+    try:
+        sql = "SELECT t.id, t.tag as name, COUNT(rt.tag_id) as amt FROM recipe_tags rt " \
+            "LEFT JOIN tags t ON t.id = rt.tag_id " \
+            "GROUP BY t.id, t.tag ORDER BY t.tag"
+        result = db.session.execute(sql)
+    except:
+        return False
+    return result
+
+def update_recipe_ingredient(id, new_value):
+    try:
+        sql = "SELECT id FROM ingredients WHERE name=:name"
+        result = db.session.execute(sql, {"name": new_value}).fetchone()
+        if result:
+            new_id = result[0]
+        else:
+            sql = "INSERT INTO ingredients (name, visible) VALUES (:name, 1) RETURNING id"
+            new_id = db.session.execute(sql, {"name": new_value}).fetchone()[0]
+        sql = "UPDATE recipe_ingredients SET ingredient_id=:new_id WHERE ingredient_id=:id"
+        db.session.execute(sql, {"id": id, "new_id": new_id})
+
+        sql = "DELETE FROM recipe_ingredients WHERE ingredient_id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def update_unit(id, new_value):
+    try:
+        sql = "SELECT id FROM units WHERE name=:name"
+        result = db.session.execute(sql, {"name": new_value}).fetchone()
+        if result:
+            new_id = result[0]
+        else:
+            sql = "INSERT INTO units (name, visible) VALUES (:name, 1) RETURNING id"
+            new_id = db.session.execute(sql, {"name": new_value}).fetchone()[0]
+        sql = "UPDATE recipe_ingredients SET unit_id=:new_id WHERE unit_id=:id"
+        db.session.execute(sql, {"id": id, "new_id": new_id})
+
+        sql = "DELETE FROM recipe_ingredients WHERE unit_id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def update_tag(id, new_value):
+    try:
+        sql = "SELECT id FROM tags WHERE tag=:tag"
+        result = db.session.execute(sql, {"tag": new_value}).fetchone()
+        if result:
+            new_id = result[0]
+        else:
+            sql = "INSERT INTO tags (tag) VALUES (:tag) RETURNING id"
+            new_id = db.session.execute(sql, {"tag": new_value}).fetchone()[0]
+        sql = "UPDATE recipe_tags SET tag_id=:new_id WHERE tag_id=:id"
+        db.session.execute(sql, {"id": id, "new_id": new_id})
+
+        sql = "DELETE FROM recipe_tags WHERE tag_id=:id"
+        db.session.execute(sql, {"id": id})
+        db.session.commit()
+    except:
+        return False
+    return True
 
 def get_comments(id):
     sql = "SELECT U.username as name, C.id as id, C.stars as stars, C.comment as text FROM " \
@@ -186,7 +253,6 @@ def get_comments(id):
 def get_average_stars(id):
     sql = "SELECT ROUND(AVG(stars), 1) as avg, COUNT(stars) FROM comments WHERE recipe_id=:id AND visible=1"
     result = db.session.execute(sql, {"id": id}).fetchone()
-    print(result)
     return result
 
 def add_comment(recipe_id, user_id, stars, comment_text):
@@ -198,30 +264,6 @@ def add_comment(recipe_id, user_id, stars, comment_text):
             "recipe_id": recipe_id,
             "stars": stars,
             "comment": comment_text})
-        db.session.commit()
-    except:
-        return False
-    return True
-
-def update_recipe_ingredient(id, new_value):
-    try:
-        print("alku")
-        sql = "SELECT id FROM ingredients WHERE name=:name"
-        result = db.session.execute(sql, {"name": new_value}).fetchone()
-        if result:
-            new_id = result[0]
-        else:
-            print("else")
-            sql = "INSERT INTO ingredients (name, visible) VALUES (:name, 1) RETURNING id"
-            new_id = db.session.execute(sql, {"name": new_value}).fetchone()[0]
-        print(f"new_id {new_id}")
-        sql = "UPDATE recipe_ingredients SET ingredient_id=:new_id WHERE ingredient_id=:id"
-        db.session.execute(sql, {"id": id, "new_id": new_id})
-
-        print("update")
-        sql = "DELETE FROM recipe_ingredients WHERE ingredient_id=:id"
-        db.session.execute(sql, {"id": id})
-        print("delete")
         db.session.commit()
     except:
         return False

@@ -9,8 +9,10 @@
 <br>
 <hr>
 {% for item in adminlist %}
-<li>{{ item }} <form action="/delete{{ title }}/{{ item.id }}" method="POST"> <input type="submit" value="Poista">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+<li>{{ item }} 
+    <form action="/delete{{ title }}/{{ item.id }}" method="POST"> 
+        <input type="submit" value="Poista">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 </li>
 {% endfor %}
