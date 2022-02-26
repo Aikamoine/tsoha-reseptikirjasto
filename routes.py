@@ -1,4 +1,5 @@
 from contextlib import redirect_stdout
+from crypt import methods
 from ctypes.wintypes import tagSIZE
 from email import contentmanager
 from app import app
@@ -165,7 +166,7 @@ def clearlist():
 
 @app.route("/editrecipe/<int:id>")
 def editrecipe(id):
-    if not user_commands.check_role("admin"):
+    if not user_commands.check_role("editor"):
         return render_template("error.html", message=ERRORS["admin_access"])
     
     name = recipe_commands.get_recipe_name(id)
@@ -173,6 +174,17 @@ def editrecipe(id):
     steps = recipe_commands.list_steps(id)
     comments = recipe_commands.get_comments(id)
     return render_template("editrecipe.html", id=id, name=name, ingredients=ingredients, steps=steps, comments=comments)
+
+
+@app.route("/deleteingredient/<int:id>", methods=["POST"])
+def deleteingredient(id):
+    user_commands.check_csrf()
+    if not user_commands.check_role("admin"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+
+    if recipe_commands.delete_recipe_ingredient(request.form["ingredient_id"]):
+        return redirect(f"/editrecipe/{id}")
+    return render_template("error.html", message="Ainesosan "+ERRORS["deleting_failed"])
 
 @app.route("/deletestep/<int:id>", methods=["POST"])
 def deletestep(id):
@@ -273,6 +285,22 @@ def deleterecipes(id):
     if recipe_commands.delete_recipe(id):
         return redirect("/edit/recipes")
     return render_template("error.html", message="Reseptin "+ERRORS["deleting_failed"])
+
+@app.route("/addingredients", methods=["POST"])
+def addingredients():
+    ingredients = request.form["ingredients"]
+    recipe_id = request.form["recipe_id"]
+    if recipe_commands.add_ingredients(recipe_id, ingredients):
+        return redirect(f"/editrecipe/{recipe_id}")
+    return render_template("error.html", message=ERRORS["adding_failed"])
+
+@app.route("/addsteps", methods=["POST"])
+def addsteps():
+    steps = request.form["steps"]
+    recipe_id = request.form["recipe_id"]
+    if recipe_commands.add_steps(recipe_id, steps):
+        return redirect(f"/editrecipe/{recipe_id}")
+    return render_template("error.html", message=ERRORS["adding_failed"])
 
 def check_length(tocheck):
     """Checks a list against maximum lenghts

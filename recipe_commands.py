@@ -63,6 +63,8 @@ def add_ingredients(recipe_id, ingredient_string):
 
 def add_steps(recipe_id, steps_string):
     step_list= steps_string.split("\n")
+    sql = "SELECT COALESCE(MAX(number)+1, 0) FROM recipe_steps WHERE recipe_id=:id"
+    next_number = db.session.execute(sql, {"id": recipe_id}).fetchone()[0]
 
     for i in range(len(step_list)):
         step = step_list[i].replace("\r", "")
@@ -71,7 +73,7 @@ def add_steps(recipe_id, steps_string):
             db.session.execute(sql, {
                 "recipe_id": recipe_id,
                 "step": step,
-                "number": i})
+                "number": i + next_number})
         except:
             return False
     db.session.commit()
@@ -264,6 +266,15 @@ def add_comment(recipe_id, user_id, stars, comment_text):
             "recipe_id": recipe_id,
             "stars": stars,
             "comment": comment_text})
+        db.session.commit()
+    except:
+        return False
+    return True
+
+def delete_recipe_ingredient(id):
+    try:
+        sql = "DELETE FROM recipe_ingredients WHERE id=:id"
+        db.session.execute(sql, {"id": id})
         db.session.commit()
     except:
         return False
