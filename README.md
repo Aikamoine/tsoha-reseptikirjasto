@@ -5,7 +5,7 @@ Sovellus löytyy osoitteesta https://tsoha-reseptikirjasto.herokuapp.com.
 - Tunnus (ilman lainausmerkkejä): "testadmin"
 - Salasana (ilman lainausmerkkejä): "salasanaonPassword1"
 
-Pääkäyttäjänäkymiin (jotka eivät ihan hirveän paljon tee) pääsee etusivulta, eli klikkaamalla "Reseptikirjasto"-tekstiä. Älkää pliis turhaan poistako mitään.
+Pääkäyttäjänäkymiinpääsee etusivulta, eli klikkaamalla "Reseptikirjasto"-tekstiä. Älkää pliis turhaan poistako mitään.
 
 ## Ominaisuuksia
 - [x] käyttäjä voi kirjautua sisään ja ulos
@@ -21,18 +21,18 @@ Pääkäyttäjänäkymiin (jotka eivät ihan hirveän paljon tee) pääsee etusi
     - [x] reseptejä
     - [x] kommentteja
   - [x] pääkäyttäjä voi muokata
-    - [ ] reseptejä
-      - vaiheiden, ainesosien tai koko reseptin poisto onnistuu tällä hetkellä
+    - [x] reseptejä
+      - etusivulta voi piilottaa reseptejä, reseptiselailusta voi muokata yksityiskohtia
     - [x] ainesosia
-    - [ ] yksiköitä
-    - [ ] tunnisteita
+    - [x] yksiköitä
+    - [x] tunnisteita
 - [x] reseptejä voi kommentoida
 - [x] istunnon aikana voi muodostaa "ostoslistan", jolle voi merkitä useamman reseptin, joiden aineisosat sovellus tallentaa yhdelle listalle 
   - [x] listalta voi poistaa jo kaapista löytyviä asioita helposti
   - [x] lista poistetaan uloskirjautumisen yhteydessä
 
 ## Backlog (ei prioriteettijärjestyksessä)
-- eri tietueiden muokkausominaisuudet kuntoon
+- Sovellus on nyt Tsoha-kurssin näkökulmasta valmis.
 
  
 ### Laajempia ideoita / täsmennyksiä (tehdään ehkä kurssin jälkeen)
