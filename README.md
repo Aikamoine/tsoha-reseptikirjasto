@@ -1,12 +1,6 @@
 # Reseptikirjasto
 Sovellus löytyy osoitteesta https://tsoha-reseptikirjasto.herokuapp.com.
 
-(Vertais)arviointia varten on tehty käyttäjätunnus admin-oikeuksin.
-- Tunnus (ilman lainausmerkkejä): "testadmin"
-- Salasana (ilman lainausmerkkejä): "salasanaonPassword1"
-
-Pääkäyttäjänäkymiinpääsee etusivulta, eli klikkaamalla "Reseptikirjasto"-tekstiä. Älkää pliis turhaan poistako mitään.
-
 ## Ominaisuuksia
 - [x] käyttäjä voi kirjautua sisään ja ulos
   - [x] Käyttäjätunnuksen luominen onnistuu käyttäjän toimesta

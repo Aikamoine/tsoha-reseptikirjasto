@@ -61,8 +61,7 @@ def adduser():
 
 @app.route("/addrecipe", methods=["GET", "POST"])
 def addrecipe():
-    #TODO: change required role to editor once course is over!
-    if not user_commands.check_role("user"):
+    if not user_commands.check_role("editor"):
         return render_template("error.html", message=ERRORS["not_logged_in"])
 
     if request.method == "GET":
@@ -140,6 +139,9 @@ def comment():
 
 @app.route("/addtolist/<int:id>")
 def addtolist(id):
+    if not user_commands.check_role("user"):
+        render_template("error.html", message=ERRORS["not_logged_in"])
+
     if shopping_list.add_to_list(id):
         return redirect("/viewrecipes")
     return render_template("error.html", message=ERRORS["not_logged_in"])
@@ -160,6 +162,9 @@ def shoppinglist():
 
 @app.route("/clearlist", methods=["POST"])
 def clearlist():
+    if not user_commands.check_role("user"):
+        render_template("error.html", message=ERRORS["not_logged_in"])
+
     user_commands.check_csrf()
     shopping_list.reset_shopping_list()
     return redirect("/shoppinglist")
@@ -288,6 +293,9 @@ def deleterecipes(id):
 
 @app.route("/addingredients", methods=["POST"])
 def addingredients():
+    if not user_commands.check_role("editor"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+    user_commands.check_csrf()
     ingredients = request.form["ingredients"]
     recipe_id = request.form["recipe_id"]
     if recipe_commands.add_ingredients(recipe_id, ingredients):
@@ -296,6 +304,9 @@ def addingredients():
 
 @app.route("/addsteps", methods=["POST"])
 def addsteps():
+    if not user_commands.check_role("editor"):
+        return render_template("error.html", message=ERRORS["admin_access"])
+    user_commands.check_csrf()
     steps = request.form["steps"]
     recipe_id = request.form["recipe_id"]
     if recipe_commands.add_steps(recipe_id, steps):
